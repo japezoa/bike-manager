@@ -1,0 +1,34 @@
+import './globals.css';
+import type { Metadata } from 'next';
+import { Space_Mono, Orbitron } from 'next/font/google';
+
+const spaceMono = Space_Mono({
+  weight: ['400', '700'],
+  subsets: ['latin'],
+  variable: '--font-body',
+});
+
+const orbitron = Orbitron({
+  weight: ['400', '500', '700', '900'],
+  subsets: ['latin'],
+  variable: '--font-display',
+});
+
+export const metadata: Metadata = {
+  title: 'Bike Manager - Gestión de Bicicletas',
+  description: 'Sistema de gestión y comparación de bicicletas',
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="es">
+      <body className={`${spaceMono.variable} ${orbitron.variable} font-body bg-zinc-950 text-zinc-100`}>
+        {children}
+      </body>
+    </html>
+  );
+}
