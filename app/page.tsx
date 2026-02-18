@@ -70,6 +70,21 @@ export default function Home() {
     setSelectedBike(null);
   };
 
+  const handleReorder = async (reorderedBikes: Bicycle[]) => {
+    try {
+      const updates = reorderedBikes.map((bike, index) => ({
+        id: bike.id!,
+        displayOrder: index
+      }));
+      
+      await bicycleService.updateOrder(updates);
+      setBicycles(reorderedBikes);
+    } catch (error) {
+      console.error('Error updating order:', error);
+      alert('Error al actualizar el orden');
+    }
+  };
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Animated background elements */}
@@ -144,6 +159,7 @@ export default function Home() {
               bicycles={bicycles}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              onReorder={handleReorder}
             />
           ) : currentView === 'form' ? (
             <BikeForm

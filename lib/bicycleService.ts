@@ -49,7 +49,7 @@ export const bicycleService = {
     const { data, error } = await supabase
       .from('bicycles')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('display_order', { ascending: true });
 
     if (error) throw error;
     return data ? data.map(toCamelCase) : [];
@@ -90,6 +90,20 @@ export const bicycleService = {
       .eq('id', id);
 
     if (error) throw error;
+  },
+
+  // Update display order
+  async updateOrder(updates: { id: string; displayOrder: number }[]): Promise<void> {
+    const promises = updates.map(({ id, displayOrder }) =>
+      supabase
+        .from('bicycles')
+        .update({ display_order: displayOrder })
+        .eq('id', id)
+    );
+
+    const results = await Promise.all(promises);
+    const errors = results.filter(r => r.error);
+    if (errors.length > 0) throw errors[0].error;
   },
 
   // Upload image

@@ -16,12 +16,16 @@ CREATE TABLE IF NOT EXISTS public.bicycles (
     purchase_condition TEXT NOT NULL CHECK (purchase_condition IN ('new', 'used')),
     image_url TEXT,
     total_kilometers INTEGER DEFAULT 0,
+    display_order INTEGER DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
 
 -- Create an index on created_at for faster sorting
 CREATE INDEX IF NOT EXISTS bicycles_created_at_idx ON public.bicycles(created_at DESC);
+
+-- Create an index on display_order for custom sorting
+CREATE INDEX IF NOT EXISTS bicycles_display_order_idx ON public.bicycles(display_order ASC);
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE public.bicycles ENABLE ROW LEVEL SECURITY;

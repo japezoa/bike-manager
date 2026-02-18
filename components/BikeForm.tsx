@@ -588,7 +588,7 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
           <div className="space-y-4">
             {formData.maintenanceHistory.map((maintenance, index) => (
               <div key={index} className="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
                   <div>
                     <label className="label text-xs">Fecha</label>
                     <input
@@ -608,13 +608,33 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
                       placeholder="Ej: Cambio de neumáticos"
                     />
                   </div>
+                  <div>
+                    <label className="label text-xs">Costo (CLP)</label>
+                    <input
+                      type="number"
+                      value={maintenance.cost || 0}
+                      onChange={(e) => handleMaintenanceChange(index, 'cost', Number(e.target.value))}
+                      className="input-field py-2"
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label className="label text-xs">KM actual (Opcional)</label>
+                    <input
+                      type="number"
+                      value={maintenance.kilometersAtMaintenance || ''}
+                      onChange={(e) => handleMaintenanceChange(index, 'kilometersAtMaintenance', e.target.value ? Number(e.target.value) : undefined)}
+                      className="input-field py-2"
+                      placeholder="0"
+                    />
+                  </div>
                   <div className="flex gap-2">
                     <div className="flex-1">
-                      <label className="label text-xs">Costo (CLP)</label>
+                      <label className="label text-xs">Próximo KM (Opcional)</label>
                       <input
                         type="number"
-                        value={maintenance.cost || 0}
-                        onChange={(e) => handleMaintenanceChange(index, 'cost', Number(e.target.value))}
+                        value={maintenance.nextMaintenanceKilometers || ''}
+                        onChange={(e) => handleMaintenanceChange(index, 'nextMaintenanceKilometers', e.target.value ? Number(e.target.value) : undefined)}
                         className="input-field py-2"
                         placeholder="0"
                       />

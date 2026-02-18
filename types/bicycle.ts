@@ -3,6 +3,8 @@ export interface MaintenanceRecord {
   date: string;
   description: string;
   cost?: number;
+  kilometersAtMaintenance?: number;
+  nextMaintenanceKilometers?: number;
 }
 
 export interface Transmission {
@@ -56,6 +58,7 @@ export interface Bicycle {
   purchaseCondition: 'new' | 'used';
   imageUrl?: string;
   totalKilometers?: number;
+  displayOrder?: number;
   created_at?: string;
   updated_at?: string;
 }
