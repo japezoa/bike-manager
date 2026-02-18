@@ -3,8 +3,7 @@
 import { useState } from 'react';
 import { Bicycle } from '@/types/bicycle';
 import { Edit, Trash2, Calendar, DollarSign, Gauge, GripVertical, Eye } from 'lucide-react';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { formatDate, formatShortDate } from '@/lib/dateUtils';
 import Link from 'next/link';
 
 interface BikeListProps {
@@ -144,7 +143,7 @@ export default function BikeList({ bicycles, onEdit, onDelete, onReorder }: Bike
                 <div className="flex items-center gap-2 text-sm text-zinc-400">
                   <Calendar className="w-4 h-4 text-cyan-500" />
                   <span>
-                    {format(new Date(bike.purchaseDate), 'dd MMM yyyy', { locale: es })}
+                    {formatDate(bike.purchaseDate)}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-zinc-400">
@@ -168,7 +167,7 @@ export default function BikeList({ bicycles, onEdit, onDelete, onReorder }: Bike
               {bike.maintenanceHistory.length > 0 && (
                 <div className="pt-2">
                   <p className="text-xs text-zinc-500 font-semibold">
-                    Último mantenimiento: {format(new Date(bike.maintenanceHistory[0].date), 'dd/MM/yyyy')}
+                    Último mantenimiento: {formatShortDate(bike.maintenanceHistory[0].date)}
                   </p>
                 </div>
               )}

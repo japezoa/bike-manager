@@ -16,8 +16,7 @@ import {
   Box,
   Wrench
 } from 'lucide-react';
-import { format } from 'date-fns';
-import { es } from 'date-fns/locale';
+import { formatDate, formatLongDate } from '@/lib/dateUtils';
 import Link from 'next/link';
 
 export default function BikeDetailPage({ params }: { params: { id: string } }) {
@@ -130,7 +129,7 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
                 <div className="flex items-center justify-between py-2 border-b border-zinc-800">
                   <span className="text-zinc-400 text-sm">Fecha de compra</span>
                   <span className="font-semibold">
-                    {format(new Date(bike.purchaseDate), 'dd MMM yyyy', { locale: es })}
+                    {formatDate(bike.purchaseDate)}
                   </span>
                 </div>
                 
@@ -367,7 +366,7 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
                         <div className="flex-1">
                           <p className="text-zinc-200 font-semibold">{maintenance.description}</p>
                           <p className="text-sm text-zinc-500 mt-1">
-                            {format(new Date(maintenance.date), 'dd MMMM yyyy', { locale: es })}
+                            {formatLongDate(maintenance.date)}
                           </p>
                         </div>
                         {maintenance.cost && maintenance.cost > 0 && (
