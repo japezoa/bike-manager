@@ -12,7 +12,7 @@ import {
   Gauge,
   Settings,
   Disc,
-  Wheel,
+  CircleDot,
   Box,
   Wrench
 } from 'lucide-react';
@@ -286,7 +286,7 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
             {/* Wheels */}
             <div className="card">
               <div className="flex items-center gap-3 mb-4">
-                <Wheel className="w-6 h-6 text-cyan-400" />
+                <CircleDot className="w-6 h-6 text-cyan-400" />
                 <h3 className="text-xl font-display font-bold text-cyan-400">RUEDAS / NEUMÁTICOS</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
