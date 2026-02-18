@@ -1,17 +1,47 @@
 import { supabase, BIKE_IMAGES_BUCKET } from './supabase';
 import { Bicycle } from '@/types/bicycle';
 
+// Helper function to convert camelCase to snake_case
+const toSnakeCase = (obj: any): any => {
+  if (Array.isArray(obj)) {
+    return obj.map(toSnakeCase);
+  } else if (obj !== null && typeof obj === 'object') {
+    return Object.keys(obj).reduce((acc, key) => {
+      const snakeKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+      acc[snakeKey] = toSnakeCase(obj[key]);
+      return acc;
+    }, {} as any);
+  }
+  return obj;
+};
+
+// Helper function to convert snake_case to camelCase
+const toCamelCase = (obj: any): any => {
+  if (Array.isArray(obj)) {
+    return obj.map(toCamelCase);
+  } else if (obj !== null && typeof obj === 'object') {
+    return Object.keys(obj).reduce((acc, key) => {
+      const camelKey = key.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+      acc[camelKey] = toCamelCase(obj[key]);
+      return acc;
+    }, {} as any);
+  }
+  return obj;
+};
+
 export const bicycleService = {
   // Create
   async create(bicycle: Omit<Bicycle, 'id' | 'created_at' | 'updated_at'>): Promise<Bicycle> {
+    const snakeCaseData = toSnakeCase(bicycle);
+    
     const { data, error } = await supabase
       .from('bicycles')
-      .insert([bicycle])
+      .insert([snakeCaseData])
       .select()
       .single();
 
     if (error) throw error;
-    return data;
+    return toCamelCase(data);
   },
 
   // Read all
@@ -22,7 +52,7 @@ export const bicycleService = {
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data || [];
+    return data ? data.map(toCamelCase) : [];
   },
 
   // Read one
@@ -34,20 +64,22 @@ export const bicycleService = {
       .single();
 
     if (error) throw error;
-    return data;
+    return toCamelCase(data);
   },
 
   // Update
   async update(id: string, bicycle: Partial<Bicycle>): Promise<Bicycle> {
+    const snakeCaseData = toSnakeCase(bicycle);
+    
     const { data, error } = await supabase
       .from('bicycles')
-      .update(bicycle)
+      .update(snakeCaseData)
       .eq('id', id)
       .select()
       .single();
 
     if (error) throw error;
-    return data;
+    return toCamelCase(data);
   },
 
   // Delete
