@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Bicycle } from '@/types/bicycle';
 import { bicycleService } from '@/lib/bicycleService';
@@ -11,7 +11,7 @@ import { Bike, Plus, GitCompare } from 'lucide-react';
 
 type View = 'list' | 'form' | 'comparison';
 
-export default function Home() {
+function HomeContent() {
   const searchParams = useSearchParams();
   const [bicycles, setBicycles] = useState<Bicycle[]>([]);
   const [currentView, setCurrentView] = useState<View>('list');
@@ -188,5 +188,20 @@ export default function Home() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+          <span className="text-zinc-400 font-semibold">Cargando...</span>
+        </div>
+      </div>
+    }>
+      <HomeContent />
+    </Suspense>
   );
 }
