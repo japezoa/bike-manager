@@ -86,10 +86,10 @@ export interface Bicycle {
   ownerId?: string; // Foreign key to Owner
   owner?: Owner; // Populated owner data
   
-  // Anti-theft / Identification
+  // Anti-theft / Identification (all optional)
   serialNumber?: string; // Número de serie del cuadro
   purchaseProof?: PurchaseProof;
-  identificationPhotos: string[]; // Fotos para identificación (ángulos específicos, detalles únicos)
+  identificationPhotos?: string[]; // Fotos para identificación (ángulos específicos, detalles únicos)
   
   created_at?: string;
   updated_at?: string;
