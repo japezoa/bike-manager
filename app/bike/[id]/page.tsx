@@ -86,18 +86,13 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
               Volver
             </button>
           </Link>
-          <Link href="/">
-            <button 
-              onClick={() => {
-                // This will be handled by the main page
-                router.push('/?edit=' + bike.id);
-              }}
-              className="btn-primary flex items-center gap-2"
-            >
-              <Edit className="w-5 h-5" />
-              Editar
-            </button>
-          </Link>
+          <button 
+            onClick={() => router.push(`/?edit=${bike.id}`)}
+            className="btn-primary flex items-center gap-2"
+          >
+            <Edit className="w-5 h-5" />
+            Editar
+          </button>
         </div>
 
         {/* Main Content */}
@@ -360,7 +355,9 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
                 <p className="text-zinc-500 text-center py-8">No hay mantenciones registradas</p>
               ) : (
                 <div className="space-y-3">
-                  {bike.maintenanceHistory.map((maintenance, index) => (
+                  {[...bike.maintenanceHistory]
+                    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                    .map((maintenance, index) => (
                     <div key={index} className="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex-1">

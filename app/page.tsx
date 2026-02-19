@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Bicycle } from '@/types/bicycle';
 import { bicycleService } from '@/lib/bicycleService';
 import BikeList from '@/components/BikeList';
@@ -11,6 +12,7 @@ import { Bike, Plus, GitCompare } from 'lucide-react';
 type View = 'list' | 'form' | 'comparison';
 
 export default function Home() {
+  const searchParams = useSearchParams();
   const [bicycles, setBicycles] = useState<Bicycle[]>([]);
   const [currentView, setCurrentView] = useState<View>('list');
   const [selectedBike, setSelectedBike] = useState<Bicycle | null>(null);
@@ -19,6 +21,17 @@ export default function Home() {
   useEffect(() => {
     loadBicycles();
   }, []);
+
+  useEffect(() => {
+    // Check for edit parameter in URL
+    const editId = searchParams?.get('edit');
+    if (editId && bicycles.length > 0) {
+      const bikeToEdit = bicycles.find(b => b.id === editId);
+      if (bikeToEdit) {
+        handleEdit(bikeToEdit);
+      }
+    }
+  }, [searchParams, bicycles]);
 
   const loadBicycles = async () => {
     try {
@@ -96,25 +109,25 @@ export default function Home() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <header className="mb-12">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="flex items-center gap-4">
               <div className="bg-gradient-to-br from-cyan-500 to-blue-600 p-4 rounded-2xl shadow-lg shadow-cyan-500/30">
                 <Bike className="w-8 h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-5xl font-display font-black text-gradient tracking-tight">
+                <h1 className="text-3xl md:text-5xl font-display font-black text-gradient tracking-tight">
                   BIKE MANAGER
                 </h1>
-                <p className="text-zinc-400 mt-1 font-semibold tracking-wide">
+                <p className="text-zinc-400 mt-1 font-semibold tracking-wide text-sm md:text-base">
                   Sistema de gestión de bicicletas
                 </p>
               </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-2 md:gap-3">
               <button
                 onClick={() => setCurrentView('list')}
-                className={`px-6 py-3 rounded-lg font-bold transition-all duration-200 ${
+                className={`flex-1 md:flex-none px-4 md:px-6 py-3 rounded-lg font-bold transition-all duration-200 text-sm md:text-base ${
                   currentView === 'list'
                     ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/30'
                     : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
@@ -124,22 +137,24 @@ export default function Home() {
               </button>
               <button
                 onClick={() => setCurrentView('comparison')}
-                className={`px-6 py-3 rounded-lg font-bold transition-all duration-200 flex items-center gap-2 ${
+                className={`flex-1 md:flex-none px-4 md:px-6 py-3 rounded-lg font-bold transition-all duration-200 flex items-center justify-center gap-2 text-sm md:text-base ${
                   currentView === 'comparison'
                     ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/30'
                     : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
                 }`}
                 disabled={bicycles.length < 2}
               >
-                <GitCompare className="w-5 h-5" />
-                COMPARAR
+                <GitCompare className="w-4 h-4 md:w-5 md:h-5" />
+                <span className="hidden sm:inline">COMPARAR</span>
+                <span className="sm:hidden">COMP</span>
               </button>
               <button
                 onClick={handleCreate}
-                className="btn-primary flex items-center gap-2"
+                className="flex-1 md:flex-none btn-primary flex items-center justify-center gap-2 text-sm md:text-base"
               >
-                <Plus className="w-5 h-5" />
-                NUEVA BICI
+                <Plus className="w-4 h-4 md:w-5 md:h-5" />
+                <span className="hidden sm:inline">NUEVA BICI</span>
+                <span className="sm:hidden">NUEVA</span>
               </button>
             </div>
           </div>
