@@ -88,7 +88,11 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
   const loadOwners = async () => {
     try {
       const data = await ownerService.getAll();
-      setOwners(data);
+      
+      // Filter: only customers can own bikes (not admin or mechanic)
+      const customersOnly = data.filter(owner => owner.role === 'customer');
+      
+      setOwners(customersOnly);
     } catch (error) {
       console.error('Error loading owners:', error);
     }

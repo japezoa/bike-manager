@@ -33,7 +33,7 @@ import UserMenu from '@/components/UserMenu';
 export default function BikeDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const { canEditBikes } = usePermissions();
-  const { owner: currentUser } = useAuth();
+  const { owner: currentUser, role } = useAuth();
   const [bike, setBike] = useState<Bicycle | null>(null);
   const [owner, setOwner] = useState<Owner | null>(null);
   const [loading, setLoading] = useState(true);
@@ -227,89 +227,6 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
               </div>
             </div>
           </div>
-
-          {/* Owner Information Card or Customer Profile */}
-          {owner && currentUser && (
-            // If current user is the owner (customer viewing their own bike), DON'T show anything
-            currentUser.id === owner.id ? null : (
-              // Otherwise show owner info (for admin/mechanic) - Full width
-              <div className="lg:col-span-3">
-                <div className="card">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="bg-gradient-to-br from-orange-500 to-red-600 p-3 rounded-xl">
-                      <User className="w-6 h-6 text-white" />
-                    </div>
-                    <h3 className="text-2xl font-display font-bold text-orange-400">PROPIETARIO</h3>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-zinc-800/50 rounded-lg p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <User className="w-4 h-4 text-orange-400" />
-                        <span className="text-zinc-500 text-sm font-semibold">Nombre Completo</span>
-                      </div>
-                      <Link href="/owners" className="group">
-                        <p className="text-zinc-100 text-lg font-semibold group-hover:text-orange-400 transition-colors">
-                          {owner.name}
-                        </p>
-                      </Link>
-                    </div>
-
-                    <div className="bg-zinc-800/50 rounded-lg p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Hash className="w-4 h-4 text-orange-400" />
-                        <span className="text-zinc-500 text-sm font-semibold">RUT</span>
-                      </div>
-                      <p className="text-zinc-100 text-lg font-mono font-semibold">{owner.rut}</p>
-                    </div>
-
-                    <div className="bg-zinc-800/50 rounded-lg p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Calendar className="w-4 h-4 text-orange-400" />
-                        <span className="text-zinc-500 text-sm font-semibold">Edad</span>
-                      </div>
-                      <p className="text-zinc-100 text-lg font-semibold">{owner.age} años</p>
-                    </div>
-
-                    <div className="bg-zinc-800/50 rounded-lg p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Mail className="w-4 h-4 text-orange-400" />
-                        <span className="text-zinc-500 text-sm font-semibold">Email</span>
-                      </div>
-                      <p className="text-zinc-100 text-base font-semibold break-all">{owner.email}</p>
-                    </div>
-
-                    <div className="bg-zinc-800/50 rounded-lg p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Phone className="w-4 h-4 text-orange-400" />
-                        <span className="text-zinc-500 text-sm font-semibold">Teléfono</span>
-                      </div>
-                      <p className="text-zinc-100 text-lg font-semibold">{owner.phone}</p>
-                    </div>
-
-                    <div className="bg-zinc-800/50 rounded-lg p-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <User className="w-4 h-4 text-orange-400" />
-                        <span className="text-zinc-500 text-sm font-semibold">Género</span>
-                      </div>
-                      <p className="text-zinc-100 text-lg font-semibold">
-                        {owner.gender === 'male' ? 'Masculino' : owner.gender === 'female' ? 'Femenino' : owner.gender === 'other' ? 'Otro' : 'Prefiero no decir'}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 pt-6 border-t border-zinc-700">
-                    <Link href="/owners">
-                      <button className="bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 font-semibold py-3 px-6 rounded-lg transition-all duration-200 border border-orange-500/20 flex items-center gap-2">
-                        <Users className="w-5 h-5" />
-                        Ver todos los propietarios
-                      </button>
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            )
-          )}
 
           {/* Right Column - Detailed Info */}
           <div className="lg:col-span-2 space-y-6">
@@ -517,6 +434,89 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
                 </div>
               )}
             </div>
+
+            {/* Owner Information Card - Admin and Mechanic can see, only Admin can edit */}
+            {owner && currentUser && currentUser.id !== owner.id && (
+              <div className="card">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="bg-gradient-to-br from-orange-500 to-red-600 p-3 rounded-xl">
+                    <User className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-display font-bold text-orange-400">PROPIETARIO</h3>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-zinc-800/50 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <User className="w-4 h-4 text-orange-400" />
+                      <span className="text-zinc-500 text-sm font-semibold">Nombre Completo</span>
+                    </div>
+                    {canEditBikes && role === 'admin' ? (
+                      <Link href="/owners" className="group">
+                        <p className="text-zinc-100 text-lg font-semibold group-hover:text-orange-400 transition-colors">
+                          {owner.name}
+                        </p>
+                      </Link>
+                    ) : (
+                      <p className="text-zinc-100 text-lg font-semibold">{owner.name}</p>
+                    )}
+                  </div>
+
+                  <div className="bg-zinc-800/50 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Hash className="w-4 h-4 text-orange-400" />
+                      <span className="text-zinc-500 text-sm font-semibold">RUT</span>
+                    </div>
+                    <p className="text-zinc-100 text-lg font-mono font-semibold">{owner.rut}</p>
+                  </div>
+
+                  <div className="bg-zinc-800/50 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Calendar className="w-4 h-4 text-orange-400" />
+                      <span className="text-zinc-500 text-sm font-semibold">Edad</span>
+                    </div>
+                    <p className="text-zinc-100 text-lg font-semibold">{owner.age} años</p>
+                  </div>
+
+                  <div className="bg-zinc-800/50 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Mail className="w-4 h-4 text-orange-400" />
+                      <span className="text-zinc-500 text-sm font-semibold">Email</span>
+                    </div>
+                    <p className="text-zinc-100 text-base font-semibold break-all">{owner.email}</p>
+                  </div>
+
+                  <div className="bg-zinc-800/50 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Phone className="w-4 h-4 text-orange-400" />
+                      <span className="text-zinc-500 text-sm font-semibold">Teléfono</span>
+                    </div>
+                    <p className="text-zinc-100 text-lg font-semibold">{owner.phone}</p>
+                  </div>
+
+                  <div className="bg-zinc-800/50 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <User className="w-4 h-4 text-orange-400" />
+                      <span className="text-zinc-500 text-sm font-semibold">Género</span>
+                    </div>
+                    <p className="text-zinc-100 text-lg font-semibold">
+                      {owner.gender === 'male' ? 'Masculino' : owner.gender === 'female' ? 'Femenino' : owner.gender === 'other' ? 'Otro' : 'Prefiero no decir'}
+                    </p>
+                  </div>
+                </div>
+
+                {role === 'admin' && (
+                  <div className="mt-6 pt-6 border-t border-zinc-700">
+                    <Link href="/owners">
+                      <button className="bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 font-semibold py-3 px-6 rounded-lg transition-all duration-200 border border-orange-500/20 flex items-center gap-2">
+                        <Users className="w-5 h-5" />
+                        Ver todos los propietarios
+                      </button>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

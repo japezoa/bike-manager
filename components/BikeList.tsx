@@ -6,6 +6,7 @@ import { Edit, Trash2, Calendar, DollarSign, Gauge, GripVertical, Eye } from 'lu
 import { formatDate, formatShortDate } from '@/lib/dateUtils';
 import Link from 'next/link';
 import { usePermissions } from './RoleGuard';
+import { useAuth } from './AuthProvider';
 
 interface BikeListProps {
   bicycles: Bicycle[];
@@ -16,6 +17,7 @@ interface BikeListProps {
 
 export default function BikeList({ bicycles, onEdit, onDelete, onReorder }: BikeListProps) {
   const { canEditBikes, canDeleteBikes } = usePermissions();
+  const { role } = useAuth();
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
@@ -58,10 +60,15 @@ export default function BikeList({ bicycles, onEdit, onDelete, onReorder }: Bike
   };
 
   if (bicycles.length === 0) {
+    const isCustomer = role === 'customer';
     return (
       <div className="card text-center py-16">
         <p className="text-zinc-400 text-lg mb-4">No hay bicicletas registradas</p>
-        <p className="text-zinc-500">Haz clic en "NUEVA BICI" para agregar tu primera bicicleta</p>
+        <p className="text-zinc-500">
+          {isCustomer 
+            ? 'Contacta al administrador del taller para agregar tu primera bicicleta'
+            : 'Haz clic en "NUEVA BICI" para agregar la primera bicicleta'}
+        </p>
       </div>
     );
   }
@@ -141,13 +148,23 @@ export default function BikeList({ bicycles, onEdit, onDelete, onReorder }: Bike
                     {bike.totalKilometers} km
                   </span>
                 )}
+                {/* Status Badge */}
+                <span className={`px-3 py-1 text-xs font-bold rounded-full border ${
+                  bike.status === 'in_use' 
+                    ? 'bg-green-500/10 text-green-400 border-green-500/20'
+                    : bike.status === 'sold'
+                    ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                    : 'bg-red-500/10 text-red-400 border-red-500/20'
+                }`}>
+                  {bike.status === 'in_use' ? 'En Uso' : bike.status === 'sold' ? 'Vendida' : 'Robada'}
+                </span>
               </div>
 
               <div className="space-y-2 pt-2 border-t border-zinc-800">
                 <div className="flex items-center gap-2 text-sm text-zinc-400">
                   <Calendar className="w-4 h-4 text-cyan-500" />
                   <span>
-                    {formatDate(bike.purchaseDate)}
+                    {formatShortDate(bike.purchaseDate)}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-zinc-400">

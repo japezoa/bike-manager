@@ -28,11 +28,20 @@ export default function OwnersPage() {
       setLoading(true);
       setError(null);
       const data = await ownerService.getAll();
-      setOwners(data);
+      
+      // Sort by role: admin first, then mechanic, then customer
+      const roleOrder = { admin: 0, mechanic: 1, customer: 2 };
+      const sortedData = data.sort((a, b) => {
+        const orderA = roleOrder[a.role as keyof typeof roleOrder] ?? 3;
+        const orderB = roleOrder[b.role as keyof typeof roleOrder] ?? 3;
+        return orderA - orderB;
+      });
+      
+      setOwners(sortedData);
       
       // Load bicycle counts for each owner
       const counts = new Map<string, number>();
-      for (const owner of data) {
+      for (const owner of sortedData) {
         if (owner.id) {
           const count = await ownerService.getBicyclesByOwner(owner.id);
           counts.set(owner.id, count);
