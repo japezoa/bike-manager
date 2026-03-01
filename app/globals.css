@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-zinc-800;
+  }
+  
+  body {
+    @apply antialiased;
+    background: 
+      radial-gradient(circle at 20% 50%, rgba(34, 211, 238, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(251, 146, 60, 0.03) 0%, transparent 50%),
+      #09090b;
+  }
+
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-zinc-950;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-zinc-700 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-zinc-600;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 
+           text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 
+           shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-105;
+  }
+
+  .btn-secondary {
+    @apply bg-zinc-800 hover:bg-zinc-700 text-zinc-100 font-semibold 
+           py-3 px-6 rounded-lg transition-all duration-200 border border-zinc-700;
+  }
+
+  .btn-danger {
+    @apply bg-red-600 hover:bg-red-500 text-white font-semibold 
+           py-3 px-6 rounded-lg transition-all duration-200;
+  }
+
+  .card {
+    @apply bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 rounded-xl p-6 
+           transition-all duration-300 hover:border-zinc-700 hover:shadow-xl 
+           hover:shadow-cyan-500/5;
+  }
+
+  .input-field {
+    @apply w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 
+           text-zinc-100 placeholder-zinc-500 focus:outline-none focus:ring-2 
+           focus:ring-cyan-500 focus:border-transparent transition-all duration-200;
+  }
+
+  .label {
+    @apply block text-sm font-semibold text-zinc-300 mb-2 tracking-wide uppercase;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500;
+  }
+
+  .gear-pattern {
+    background-image: 
+      radial-gradient(circle at 25px 25px, rgba(34, 211, 238, 0.05) 2%, transparent 0%),
+      radial-gradient(circle at 75px 75px, rgba(34, 211, 238, 0.05) 2%, transparent 0%);
+    background-size: 100px 100px;
+  }
+}
