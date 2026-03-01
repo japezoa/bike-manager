@@ -35,13 +35,14 @@ export function usePermissions() {
     isStaff: role === 'admin' || role === 'mechanic',
     
     // Permisos específicos
-    canEditBikes: role === 'admin' || role === 'mechanic',
+    canEditBikes: role === 'admin', // Solo admin puede editar bicis
     canDeleteBikes: role === 'admin',
     canEditOwners: role === 'admin',
     canDeleteOwners: role === 'admin',
     canViewAllBikes: role === 'admin' || role === 'mechanic',
     canViewAllOwners: role === 'admin' || role === 'mechanic',
-    canEditMaintenances: role === 'admin' || role === 'mechanic',
-    canCreateBikes: role === 'admin' || role === 'mechanic',
+    canEditMaintenances: role === 'admin' || role === 'mechanic', // Ambos pueden editar mantenciones
+    canCreateBikes: role === 'admin', // Solo admin puede crear bicis
+    canAssignOwners: role === 'admin', // Solo admin puede asignar propietarios
   };
 }

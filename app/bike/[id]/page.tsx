@@ -29,6 +29,7 @@ import { usePermissions } from '@/components/RoleGuard';
 import { useAuth } from '@/components/AuthProvider';
 import CustomerProfile from '@/components/CustomerProfile';
 import UserMenu from '@/components/UserMenu';
+import MaintenanceManager from '@/components/MaintenanceManager';
 
 export default function BikeDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -378,62 +379,8 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
               </div>
             </div>
 
-            {/* Maintenance History */}
-            <div className="card">
-              <div className="flex items-center gap-3 mb-4">
-                <Calendar className="w-6 h-6 text-cyan-400" />
-                <h3 className="text-xl font-display font-bold text-cyan-400">HISTORIAL DE MANTENCIÓN</h3>
-              </div>
-              
-              {bike.maintenanceHistory.length === 0 ? (
-                <p className="text-zinc-500 text-center py-8">No hay mantenciones registradas</p>
-              ) : (
-                <div className="space-y-3">
-                  {[...bike.maintenanceHistory]
-                    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                    .map((maintenance, index) => (
-                    <div key={index} className="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex-1">
-                          <p className="text-zinc-200 font-semibold">{maintenance.description}</p>
-                          <p className="text-sm text-zinc-500 mt-1">
-                            {formatShortDate(maintenance.date)}
-                          </p>
-                        </div>
-                        {maintenance.cost && maintenance.cost > 0 && (
-                          <span className="px-3 py-1 bg-orange-500/10 text-orange-400 text-sm font-bold rounded-lg border border-orange-500/20">
-                            ${maintenance.cost.toLocaleString()} CLP
-                          </span>
-                        )}
-                      </div>
-                      
-                      {(maintenance.kilometersAtMaintenance || maintenance.nextMaintenanceKilometers) && (
-                        <div className="flex gap-4 mt-3 pt-3 border-t border-zinc-700">
-                          {maintenance.kilometersAtMaintenance && (
-                            <div className="flex items-center gap-2 text-sm">
-                              <Gauge className="w-4 h-4 text-purple-400" />
-                              <span className="text-zinc-400">KM actual:</span>
-                              <span className="text-purple-400 font-semibold">
-                                {maintenance.kilometersAtMaintenance} km
-                              </span>
-                            </div>
-                          )}
-                          {maintenance.nextMaintenanceKilometers && (
-                            <div className="flex items-center gap-2 text-sm">
-                              <Gauge className="w-4 h-4 text-cyan-400" />
-                              <span className="text-zinc-400">Próximo:</span>
-                              <span className="text-cyan-400 font-semibold">
-                                {maintenance.nextMaintenanceKilometers} km
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            {/* Maintenance Management */}
+            <MaintenanceManager bicycleId={bike.id!} />
 
             {/* Owner Information Card - Admin and Mechanic can see, only Admin can edit */}
             {owner && currentUser && currentUser.id !== owner.id && (
