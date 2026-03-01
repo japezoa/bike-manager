@@ -30,6 +30,7 @@ import { useAuth } from '@/components/AuthProvider';
 import CustomerProfile from '@/components/CustomerProfile';
 import UserMenu from '@/components/UserMenu';
 import MaintenanceManager from '@/components/MaintenanceManager';
+import AuditLogViewer from '@/components/AuditLogViewer';
 
 export default function BikeDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -380,7 +381,10 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
             </div>
 
             {/* Maintenance Management */}
-            <MaintenanceManager bicycleId={bike.id!} />
+            <MaintenanceManager 
+              bicycleId={bike.id!} 
+              legacyMaintenances={bike.maintenanceHistory}
+            />
 
             {/* Owner Information Card - Admin and Mechanic can see, only Admin can edit */}
             {owner && currentUser && currentUser.id !== owner.id && (
@@ -463,6 +467,11 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
                   </div>
                 )}
               </div>
+            )}
+
+            {/* Audit Log - Admin Only */}
+            {role === 'admin' && bike.id && (
+              <AuditLogViewer entityType="bicycle" entityId={bike.id} />
             )}
           </div>
         </div>

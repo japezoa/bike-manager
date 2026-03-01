@@ -6,6 +6,7 @@ import { bicycleService } from '@/lib/bicycleService';
 import { ownerService } from '@/lib/ownerService';
 import { Save, X, Upload, Plus, Trash2, User } from 'lucide-react';
 import Link from 'next/link';
+import { usePermissions } from './RoleGuard';
 
 interface BikeFormProps {
   bicycle: Bicycle | null;
@@ -14,6 +15,7 @@ interface BikeFormProps {
 }
 
 export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
+  const { canAssignOwners } = usePermissions();
   const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -236,22 +238,23 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
         </div>
       </div>
 
-      {/* Owner Information */}
-      <div className="card">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <User className="w-6 h-6 text-orange-500" />
-            <h3 className="text-xl font-display font-bold text-orange-400">PROPIETARIO</h3>
+      {/* Owner Information - Only Admin */}
+      {canAssignOwners && (
+        <div className="card">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <User className="w-6 h-6 text-orange-500" />
+              <h3 className="text-xl font-display font-bold text-orange-400">PROPIETARIO</h3>
+            </div>
+            <Link href="/owners" target="_blank">
+              <button
+                type="button"
+                className="text-sm bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 font-semibold py-2 px-4 rounded-lg transition-all duration-200 border border-orange-500/20"
+              >
+                Gestionar Propietarios
+              </button>
+            </Link>
           </div>
-          <Link href="/owners" target="_blank">
-            <button
-              type="button"
-              className="text-sm bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 font-semibold py-2 px-4 rounded-lg transition-all duration-200 border border-orange-500/20"
-            >
-              Gestionar Propietarios
-            </button>
-          </Link>
-        </div>
         <div className="grid grid-cols-1 gap-4">
           <div>
             <label className="label">Seleccionar Propietario</label>
@@ -309,6 +312,7 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
           )}
         </div>
       </div>
+      )}
 
       {/* Basic Information */}
       <div className="card">

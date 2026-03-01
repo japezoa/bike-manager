@@ -8,9 +8,10 @@ import { usePermissions } from './RoleGuard';
 
 interface MaintenanceManagerProps {
   bicycleId: string;
+  legacyMaintenances?: any[]; // For backward compatibility with maintenanceHistory field
 }
 
-export default function MaintenanceManager({ bicycleId }: MaintenanceManagerProps) {
+export default function MaintenanceManager({ bicycleId, legacyMaintenances = [] }: MaintenanceManagerProps) {
   const { canEditMaintenances, isAdmin } = usePermissions();
   const [maintenances, setMaintenances] = useState<Maintenance[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,16 +28,49 @@ export default function MaintenanceManager({ bicycleId }: MaintenanceManagerProp
 
   useEffect(() => {
     loadMaintenances();
-  }, [bicycleId]);
+  }, [bicycleId, legacyMaintenances]);
 
   const loadMaintenances = async () => {
     try {
       setLoading(true);
+      
+      // Try to load from new maintenances table
       const data = await maintenanceService.getByBicycleId(bicycleId);
-      setMaintenances(data);
+      
+      // If no data in new table and legacy data exists, use legacy
+      if (data.length === 0 && legacyMaintenances && legacyMaintenances.length > 0) {
+        // Convert legacy format to new format
+        const converted = legacyMaintenances.map((m, index) => ({
+          id: `legacy-${index}`,
+          bicycleId,
+          date: m.date,
+          maintenanceType: 'mano_de_obra' as const, // Default type for legacy
+          description: m.description,
+          cost: m.cost,
+          kilometersAtMaintenance: m.kilometersAtMaintenance,
+          nextMaintenanceKilometers: m.nextMaintenanceKilometers,
+        }));
+        setMaintenances(converted);
+      } else {
+        setMaintenances(data);
+      }
     } catch (error) {
       console.error('Error loading maintenances:', error);
-      alert('Error al cargar mantenciones');
+      
+      // Fallback to legacy data if table doesn't exist yet
+      if (legacyMaintenances && legacyMaintenances.length > 0) {
+        const converted = legacyMaintenances.map((m, index) => ({
+          id: `legacy-${index}`,
+          bicycleId,
+          date: m.date,
+          maintenanceType: 'mano_de_obra' as const,
+          description: m.description,
+          cost: m.cost,
+          kilometersAtMaintenance: m.kilometersAtMaintenance,
+          nextMaintenanceKilometers: m.nextMaintenanceKilometers,
+        }));
+        setMaintenances(converted);
+      }
     } finally {
       setLoading(false);
     }
