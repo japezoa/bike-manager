@@ -2,6 +2,7 @@
 
 import { Owner } from '@/types/bicycle';
 import { Edit, Trash2, User, Mail, Phone, Bike } from 'lucide-react';
+import { usePermissions } from './RoleGuard';
 
 interface OwnerListProps {
   owners: Owner[];
@@ -12,6 +13,8 @@ interface OwnerListProps {
 }
 
 export default function OwnerList({ owners, bicycleCounts, onEdit, onDelete, onViewBikes }: OwnerListProps) {
+  const { canEditOwners, canDeleteOwners } = usePermissions();
+  
   const getGenderLabel = (gender: string): string => {
     const labels: Record<string, string> = {
       male: 'Masculino',
@@ -98,20 +101,24 @@ export default function OwnerList({ owners, bicycleCounts, onEdit, onDelete, onV
                   Ver bicis
                 </button>
               )}
-              <button
-                onClick={() => onEdit(owner)}
-                className={`${bikeCount > 0 ? '' : 'flex-1'} flex items-center justify-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 font-semibold py-2 px-4 rounded-lg transition-all duration-200`}
-              >
-                <Edit className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => owner.id && onDelete(owner.id)}
-                className="flex items-center justify-center gap-2 bg-red-600/10 hover:bg-red-600/20 text-red-400 font-semibold py-2 px-4 rounded-lg transition-all duration-200 border border-red-600/20"
-                title={bikeCount > 0 ? 'No se puede eliminar un propietario con bicicletas' : 'Eliminar propietario'}
-                disabled={bikeCount > 0}
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+              {canEditOwners && (
+                <button
+                  onClick={() => onEdit(owner)}
+                  className={`${bikeCount > 0 ? '' : 'flex-1'} flex items-center justify-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 font-semibold py-2 px-4 rounded-lg transition-all duration-200`}
+                >
+                  <Edit className="w-4 h-4" />
+                </button>
+              )}
+              {canDeleteOwners && (
+                <button
+                  onClick={() => owner.id && onDelete(owner.id)}
+                  className="flex items-center justify-center gap-2 bg-red-600/10 hover:bg-red-600/20 text-red-400 font-semibold py-2 px-4 rounded-lg transition-all duration-200 border border-red-600/20"
+                  title={bikeCount > 0 ? 'No se puede eliminar un propietario con bicicletas' : 'Eliminar propietario'}
+                  disabled={bikeCount > 0}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              )}
             </div>
           </div>
         );

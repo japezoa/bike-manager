@@ -8,10 +8,12 @@ import OwnerList from '@/components/OwnerList';
 import OwnerForm from '@/components/OwnerForm';
 import UserMenu from '@/components/UserMenu';
 import { User, Plus, ArrowLeft, List } from 'lucide-react';
+import { usePermissions } from '@/components/RoleGuard';
 
 type View = 'list' | 'form';
 
 export default function OwnersPage() {
+  const { canEditOwners } = usePermissions();
   const [owners, setOwners] = useState<Owner[]>([]);
   const [bicycleCounts, setBicycleCounts] = useState<Map<string, number>>(new Map());
   const [currentView, setCurrentView] = useState<View>('list');
@@ -149,14 +151,16 @@ export default function OwnersPage() {
                 <List className="w-4 h-4 md:w-5 md:h-5 md:hidden" />
                 <span className="hidden md:inline">LISTA</span>
               </button>
-              <button
-                onClick={handleCreate}
-                className="flex-1 md:flex-none bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white font-bold py-3 px-4 md:px-6 rounded-lg transition-all duration-300 shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 hover:scale-105 flex items-center justify-center gap-2 text-sm md:text-base"
-              >
-                <Plus className="w-4 h-4 md:w-5 md:h-5" />
-                <span className="hidden sm:inline">NUEVO PROPIETARIO</span>
-                <span className="sm:hidden">NUEVO</span>
-              </button>
+              {canEditOwners && (
+                <button
+                  onClick={handleCreate}
+                  className="flex-1 md:flex-none bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white font-bold py-3 px-4 md:px-6 rounded-lg transition-all duration-300 shadow-lg shadow-orange-500/20 hover:shadow-orange-500/40 hover:scale-105 flex items-center justify-center gap-2 text-sm md:text-base"
+                >
+                  <Plus className="w-4 h-4 md:w-5 md:h-5" />
+                  <span className="hidden sm:inline">NUEVO PROPIETARIO</span>
+                  <span className="sm:hidden">NUEVO</span>
+                </button>
+              )}
             </div>
           </div>
         </header>
