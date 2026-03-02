@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { Bicycle, Owner } from '@/types/bicycle';
@@ -209,7 +209,7 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
             <p className="text-sm text-zinc-500 mt-2">
               No hay propietarios registrados.
               <Link href="/owners" target="_blank" className="text-orange-400 hover:text-orange-300 ml-1">
-                Crear uno aqu�
+                Crear uno aquí
               </Link>
             </p>
           )}
