@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Bicycle, MaintenanceRecord, Owner } from '@/types/bicycle';
+import { Bicycle, Owner } from '@/types/bicycle';
 import { bicycleService } from '@/lib/bicycleService';
 import { ownerService } from '@/lib/ownerService';
 import { Save, X, Upload, Plus, Trash2, User } from 'lucide-react';
@@ -71,14 +71,7 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
 
   useEffect(() => {
     if (bicycle) {
-      // Sort maintenance history by date (newest first)
-      const sortedBike = {
-        ...bicycle,
-        maintenanceHistory: [...bicycle.maintenanceHistory].sort((a, b) => 
-          new Date(b.date).getTime() - new Date(a.date).getTime()
-        )
-      };
-      setFormData(sortedBike);
+      setFormData(bicycle);
       if (bicycle.imageUrl) {
         setImagePreview(bicycle.imageUrl);
       }
@@ -122,34 +115,6 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  const handleAddMaintenance = () => {
-    const newMaintenance: MaintenanceRecord = {
-      date: new Date().toISOString().split('T')[0],
-      description: '',
-      cost: 0,
-    };
-    setFormData(prev => ({
-      ...prev,
-      maintenanceHistory: [newMaintenance, ...prev.maintenanceHistory],
-    }));
-  };
-
-  const handleMaintenanceChange = (index: number, field: keyof MaintenanceRecord, value: any) => {
-    setFormData(prev => ({
-      ...prev,
-      maintenanceHistory: prev.maintenanceHistory.map((m, i) =>
-        i === index ? { ...m, [field]: value } : m
-      ),
-    }));
-  };
-
-  const handleDeleteMaintenance = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      maintenanceHistory: prev.maintenanceHistory.filter((_, i) => i !== index),
-    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -687,93 +652,6 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
         </div>
       </div>
 
-      {/* Maintenance History */}
-      <div className="card">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-xl font-display font-bold text-cyan-400">HISTORIAL DE MANTENCIÓN</h3>
-          <button
-            type="button"
-            onClick={handleAddMaintenance}
-            className="flex items-center gap-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 font-semibold py-2 px-4 rounded-lg transition-all duration-200 border border-cyan-500/20"
-          >
-            <Plus className="w-4 h-4" />
-            Agregar
-          </button>
-        </div>
-        
-        {formData.maintenanceHistory.length === 0 ? (
-          <p className="text-zinc-500 text-center py-8">No hay mantenciones registradas</p>
-        ) : (
-          <div className="space-y-4">
-            {formData.maintenanceHistory.map((maintenance, index) => (
-              <div key={index} className="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
-                <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
-                  <div>
-                    <label className="label text-xs">Fecha</label>
-                    <input
-                      type="date"
-                      value={maintenance.date}
-                      onChange={(e) => handleMaintenanceChange(index, 'date', e.target.value)}
-                      className="input-field py-2"
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="label text-xs">Descripción</label>
-                    <input
-                      type="text"
-                      value={maintenance.description}
-                      onChange={(e) => handleMaintenanceChange(index, 'description', e.target.value)}
-                      className="input-field py-2"
-                      placeholder="Ej: Cambio de neumáticos"
-                    />
-                  </div>
-                  <div>
-                    <label className="label text-xs">Costo (CLP)</label>
-                    <input
-                      type="number"
-                      value={maintenance.cost || 0}
-                      onChange={(e) => handleMaintenanceChange(index, 'cost', Number(e.target.value))}
-                      className="input-field py-2"
-                      placeholder="0"
-                    />
-                  </div>
-                  <div>
-                    <label className="label text-xs">KM actual (Opcional)</label>
-                    <input
-                      type="number"
-                      value={maintenance.kilometersAtMaintenance || ''}
-                      onChange={(e) => handleMaintenanceChange(index, 'kilometersAtMaintenance', e.target.value ? Number(e.target.value) : undefined)}
-                      className="input-field py-2"
-                      placeholder="0"
-                    />
-                  </div>
-                  <div className="flex gap-2">
-                    <div className="flex-1">
-                      <label className="label text-xs">Próximo KM (Opcional)</label>
-                      <input
-                        type="number"
-                        value={maintenance.nextMaintenanceKilometers || ''}
-                        onChange={(e) => handleMaintenanceChange(index, 'nextMaintenanceKilometers', e.target.value ? Number(e.target.value) : undefined)}
-                        className="input-field py-2"
-                        placeholder="0"
-                      />
-                    </div>
-                    <div className="flex items-end">
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteMaintenance(index)}
-                        className="bg-red-600/10 hover:bg-red-600/20 text-red-400 p-2 rounded-lg transition-all duration-200 border border-red-600/20"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
     </form>
   );
 }
