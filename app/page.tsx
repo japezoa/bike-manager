@@ -22,6 +22,7 @@ export default function Home() {
   const [selectedBike, setSelectedBike] = useState<Bicycle | null>(null);
   const [loading, setLoading] = useState(true);
   const [ownerFilter, setOwnerFilter] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string[]>(['in_use', 'in_workshop']); // Default: show active bikes
 
   useEffect(() => {
     loadBicycles();
@@ -50,7 +51,7 @@ export default function Home() {
   }, [bicycles]);
 
   useEffect(() => {
-    // Apply owner filter
+    // Apply filters
     let filtered = bicycles;
     
     // If customer, only show their bikes
@@ -63,8 +64,13 @@ export default function Home() {
       filtered = filtered.filter(b => b.ownerId === ownerFilter);
     }
     
+    // Apply status filter
+    if (statusFilter.length > 0) {
+      filtered = filtered.filter(b => statusFilter.includes(b.status));
+    }
+    
     setFilteredBicycles(filtered);
-  }, [bicycles, ownerFilter, role, currentUser]);
+  }, [bicycles, ownerFilter, statusFilter, role, currentUser]);
 
   const loadBicycles = async () => {
     try {
@@ -194,6 +200,43 @@ export default function Home() {
               </button>
             )}
           </div>
+
+          {/* Status Filters */}
+          {currentView === 'list' && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="text-zinc-400 text-sm font-semibold self-center">Mostrar:</span>
+              {[
+                { value: 'in_use', label: 'En Uso', color: 'green' },
+                { value: 'in_workshop', label: 'En Taller', color: 'orange' },
+                { value: 'stolen', label: 'Robada', color: 'red' },
+                { value: 'sold', label: 'Vendida', color: 'blue' }
+              ].map((status) => {
+                const isActive = statusFilter.includes(status.value);
+                return (
+                  <button
+                    key={status.value}
+                    onClick={() => {
+                      if (isActive) {
+                        setStatusFilter(statusFilter.filter(s => s !== status.value));
+                      } else {
+                        setStatusFilter([...statusFilter, status.value]);
+                      }
+                    }}
+                    className={`px-3 py-1.5 text-xs font-bold rounded-full border transition-all ${
+                      isActive
+                        ? status.color === 'green' ? 'bg-green-500/20 text-green-400 border-green-500/40'
+                        : status.color === 'orange' ? 'bg-orange-500/20 text-orange-400 border-orange-500/40'
+                        : status.color === 'red' ? 'bg-red-500/20 text-red-400 border-red-500/40'
+                        : 'bg-blue-500/20 text-blue-400 border-blue-500/40'
+                        : 'bg-zinc-800 text-zinc-500 border-zinc-700 hover:bg-zinc-700'
+                    }`}
+                  >
+                    {status.label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       </header>
 

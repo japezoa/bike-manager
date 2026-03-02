@@ -381,10 +381,7 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
             </div>
 
             {/* Maintenance Management */}
-            <MaintenanceManager 
-              bicycleId={bike.id!} 
-              legacyMaintenances={bike.maintenanceHistory}
-            />
+            <MaintenanceManager bicycleId={bike.id!} />
 
             {/* Owner Information Card - Admin and Mechanic can see, only Admin can edit */}
             {owner && currentUser && currentUser.id !== owner.id && (

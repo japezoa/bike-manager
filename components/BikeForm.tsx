@@ -59,10 +59,8 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
       saddle: '',
       pedals: '',
     },
-    maintenanceHistory: [],
     purchaseDate: new Date().toISOString().split('T')[0],
     purchasePrice: 0,
-    purchaseCondition: 'used',
     totalKilometers: 0,
     currentStatus: 'with_owner',
   });
@@ -241,19 +239,9 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
       {/* Owner Information - Only Admin */}
       {canAssignOwners && (
         <div className="card">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <User className="w-6 h-6 text-orange-500" />
-              <h3 className="text-xl font-display font-bold text-orange-400">PROPIETARIO</h3>
-            </div>
-            <Link href="/owners" target="_blank">
-              <button
-                type="button"
-                className="text-sm bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 font-semibold py-2 px-4 rounded-lg transition-all duration-200 border border-orange-500/20"
-              >
-                Gestionar Propietarios
-              </button>
-            </Link>
+          <div className="flex items-center gap-3 mb-4">
+            <User className="w-6 h-6 text-orange-500" />
+            <h3 className="text-xl font-display font-bold text-orange-400">PROPIETARIO</h3>
           </div>
         <div className="grid grid-cols-1 gap-4">
           <div>
@@ -685,17 +673,6 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
               className="input-field"
               placeholder="0"
             />
-          </div>
-          <div>
-            <label className="label">Condición</label>
-            <select
-              value={formData.purchaseCondition}
-              onChange={(e) => handleInputChange('purchaseCondition', e.target.value)}
-              className="input-field"
-            >
-              <option value="new">Nueva</option>
-              <option value="used">Usada</option>
-            </select>
           </div>
           <div>
             <label className="label">Kilómetros totales (Opcional)</label>

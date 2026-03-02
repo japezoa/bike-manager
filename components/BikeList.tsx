@@ -152,11 +152,16 @@ export default function BikeList({ bicycles, onEdit, onDelete, onReorder }: Bike
                 <span className={`px-3 py-1 text-xs font-bold rounded-full border ${
                   bike.status === 'in_use' 
                     ? 'bg-green-500/10 text-green-400 border-green-500/20'
-                    : bike.status === 'sold'
-                    ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
-                    : 'bg-red-500/10 text-red-400 border-red-500/20'
+                    : bike.status === 'in_workshop'
+                    ? 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+                    : bike.status === 'stolen'
+                    ? 'bg-red-500/10 text-red-400 border-red-500/20'
+                    : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
                 }`}>
-                  {bike.status === 'in_use' ? 'En Uso' : bike.status === 'sold' ? 'Vendida' : 'Robada'}
+                  {bike.status === 'in_use' ? 'En Uso' 
+                    : bike.status === 'in_workshop' ? 'En Taller'
+                    : bike.status === 'stolen' ? 'Robada'
+                    : 'Vendida'}
                 </span>
               </div>
 
@@ -170,12 +175,7 @@ export default function BikeList({ bicycles, onEdit, onDelete, onReorder }: Bike
                 <div className="flex items-center gap-2 text-sm text-zinc-400">
                   <DollarSign className="w-4 h-4 text-cyan-500" />
                   <div className="flex flex-col">
-                    <div className="flex items-center gap-2">
-                      <span>${bike.purchasePrice.toLocaleString()} CLP</span>
-                      <span className="px-2 py-0.5 bg-zinc-800 text-zinc-300 text-xs rounded">
-                        {bike.purchaseCondition === 'new' ? 'Nueva' : 'Usada'}
-                      </span>
-                    </div>
+                    <span>${bike.purchasePrice.toLocaleString()} CLP</span>
                     {totalMaintenanceCost > 0 && (
                       <span className="text-xs text-orange-400 mt-1">
                         + ${totalMaintenanceCost.toLocaleString()} en mantenciones

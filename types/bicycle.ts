@@ -123,20 +123,18 @@ export interface Components {
 export interface Bicycle {
   id?: string;
   name: string;
-  brand: string; // Nueva: Marca de la bici
+  brand: string; // Marca de la bici
   model: string;
-  bikeType: 'MTB' | 'Gravel' | 'Ruta'; // Nueva: Tipo de bici
-  status: 'in_use' | 'sold' | 'stolen'; // Nueva: Estado de la bici
+  bikeType: 'MTB' | 'Gravel' | 'Ruta'; // Tipo de bici
+  status: 'in_use' | 'in_workshop' | 'stolen' | 'sold'; // Estado de la bici
   frame: string;
   fork: string;
   transmission: Transmission;
   brakes: Brakes;
   wheels: Wheels;
   components: Components;
-  maintenanceHistory: MaintenanceRecord[];
   purchaseDate: string;
   purchasePrice: number;
-  purchaseCondition: 'new' | 'used';
   imageUrl?: string;
   totalKilometers?: number;
   displayOrder?: number;
