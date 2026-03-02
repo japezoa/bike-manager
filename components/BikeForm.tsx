@@ -72,11 +72,7 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
   useEffect(() => {
     if (bicycle) {
       // Sort maintenance history by date (newest first)
-      const sortedBike = {
-        ...bicycle,
-        maintenanceHistory: [...bicycle.maintenanceHistory].sort((a, b) => 
-          new Date(b.date).getTime() - new Date(a.date).getTime()
-        )
+      const sortedBike = ""
       };
       setFormData(sortedBike);
       if (bicycle.imageUrl) {
