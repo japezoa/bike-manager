@@ -53,12 +53,6 @@ export default function BikeList({ bicycles, onEdit, onDelete, onReorder }: Bike
     setDragOverIndex(null);
   };
 
-  const getTotalMaintenanceCost = (bike: Bicycle): number => {
-    return bike.maintenanceHistory.reduce((total, maintenance) => {
-      return total + (maintenance.cost || 0);
-    }, 0);
-  };
-
   if (bicycles.length === 0) {
     const isCustomer = role === 'customer';
     return (
@@ -76,7 +70,6 @@ export default function BikeList({ bicycles, onEdit, onDelete, onReorder }: Bike
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
       {bicycles.map((bike, index) => {
-        const totalMaintenanceCost = getTotalMaintenanceCost(bike);
         const isDragging = draggedIndex === index;
         const isDragOver = dragOverIndex === index;
 
@@ -176,22 +169,10 @@ export default function BikeList({ bicycles, onEdit, onDelete, onReorder }: Bike
                   <DollarSign className="w-4 h-4 text-cyan-500" />
                   <div className="flex flex-col">
                     <span>${bike.purchasePrice.toLocaleString()} CLP</span>
-                    {totalMaintenanceCost > 0 && (
-                      <span className="text-xs text-orange-400 mt-1">
-                        + ${totalMaintenanceCost.toLocaleString()} en mantenciones
-                      </span>
-                    )}
                   </div>
                 </div>
               </div>
 
-              {bike.maintenanceHistory.length > 0 && (
-                <div className="pt-2">
-                  <p className="text-xs text-zinc-500 font-semibold">
-                    Último mantenimiento: {formatShortDate(bike.maintenanceHistory[0].date)}
-                  </p>
-                </div>
-              )}
             </div>
 
             {/* Actions */}

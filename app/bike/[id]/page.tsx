@@ -68,18 +68,6 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
     }
   };
 
-  const getTotalMaintenanceCost = (): number => {
-    if (!bike) return 0;
-    return bike.maintenanceHistory.reduce((total, maintenance) => {
-      return total + (maintenance.cost || 0);
-    }, 0);
-  };
-
-  const getTotalCost = (): number => {
-    if (!bike) return 0;
-    return bike.purchasePrice + getTotalMaintenanceCost();
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
@@ -194,27 +182,6 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
                   <span className="text-zinc-400 text-sm">Precio de compra</span>
                   <span className="font-semibold text-cyan-400">
                     ${bike.purchasePrice.toLocaleString()} CLP
-                  </span>
-                </div>
-                
-                <div className="flex items-center justify-between py-2 border-b border-zinc-800">
-                  <span className="text-zinc-400 text-sm">Total mantenciones</span>
-                  <span className="font-semibold text-orange-400">
-                    ${getTotalMaintenanceCost().toLocaleString()} CLP
-                  </span>
-                </div>
-                
-                <div className="flex items-center justify-between py-3 bg-zinc-800/50 rounded-lg px-3">
-                  <span className="text-zinc-300 font-semibold">Costo total</span>
-                  <span className="font-bold text-lg text-gradient">
-                    ${getTotalCost().toLocaleString()} CLP
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between py-2 border-b border-zinc-800">
-                  <span className="text-zinc-400 text-sm">Condición</span>
-                  <span className="px-3 py-1 bg-zinc-800 text-zinc-300 text-sm rounded font-semibold">
-                    {bike.purchaseCondition === 'new' ? 'Nueva' : 'Usada'}
                   </span>
                 </div>
 
