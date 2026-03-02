@@ -1,4 +1,4 @@
-ï»¿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import { Bicycle, Owner } from '@/types/bicycle';
@@ -209,12 +209,108 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
             <p className="text-sm text-zinc-500 mt-2">
               No hay propietarios registrados.
               <Link href="/owners" target="_blank" className="text-orange-400 hover:text-orange-300 ml-1">
-                Crear uno aquÃ­
+                Crear uno aquí
               </Link>
             </p>
           )}
         </div>
       )}
+{/* INFORMACIÓN BÁSICA */}
+<div className="card">
+  <h3 className="text-xl font-display font-bold text-cyan-400 mb-4">
+    INFORMACIÓN BÁSICA
+  </h3>
+
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label className="label">Nombre</label>
+      <input
+        type="text"
+        required
+        value={formData.name}
+        onChange={(e) => handleInputChange('name', e.target.value)}
+        className="input-field"
+      />
+    </div>
+
+    <div>
+      <label className="label">Marca</label>
+      <input
+        type="text"
+        required
+        value={formData.brand}
+        onChange={(e) => handleInputChange('brand', e.target.value)}
+        className="input-field"
+      />
+    </div>
+
+    <div>
+      <label className="label">Modelo</label>
+      <input
+        type="text"
+        required
+        value={formData.model}
+        onChange={(e) => handleInputChange('model', e.target.value)}
+        className="input-field"
+      />
+    </div>
+
+    <div>
+      <label className="label">Tipo</label>
+      <select
+        required
+        value={formData.bikeType}
+        onChange={(e) => handleInputChange('bikeType', e.target.value)}
+        className="input-field"
+      >
+        <option value="MTB">MTB</option>
+        <option value="Gravel">Gravel</option>
+        <option value="Ruta">Ruta</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+{/* INFORMACIÓN DE COMPRA */}
+<div className="card">
+  <h3 className="text-xl font-display font-bold text-cyan-400 mb-4">
+    INFORMACIÓN DE COMPRA
+  </h3>
+
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      <label className="label">Fecha</label>
+      <input
+        type="date"
+        required
+        value={formData.purchaseDate}
+        onChange={(e) => handleInputChange('purchaseDate', e.target.value)}
+        className="input-field"
+      />
+    </div>
+
+    <div>
+      <label className="label">Precio</label>
+      <input
+        type="number"
+        required
+        value={formData.purchasePrice}
+        onChange={(e) => handleInputChange('purchasePrice', Number(e.target.value))}
+        className="input-field"
+      />
+    </div>
+
+    <div>
+      <label className="label">Kilómetros</label>
+      <input
+        type="number"
+        value={formData.totalKilometers}
+        onChange={(e) => handleInputChange('totalKilometers', Number(e.target.value))}
+        className="input-field"
+      />
+    </div>
+  </div>
+</div>
     </form>
   );
 }
