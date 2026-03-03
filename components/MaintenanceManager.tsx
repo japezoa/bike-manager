@@ -164,7 +164,7 @@ export default function MaintenanceManager({ bicycleId }: MaintenanceManagerProp
                   </div>
                   {maintenance.cost && maintenance.cost > 0 && (
                     <span className="px-3 py-1 bg-orange-500/10 text-orange-400 text-sm font-bold rounded-lg border border-orange-500/20">
-                      ${maintenance.cost.toLocaleString()} CLP
+                      ${maintenance.cost.toLocaleString()}
                     </span>
                   )}
                 </div>
@@ -326,7 +326,7 @@ export default function MaintenanceManager({ bicycleId }: MaintenanceManagerProp
                 <div className="flex items-center gap-2">
                   {maintenance.cost && maintenance.cost > 0 && (
                     <span className="px-3 py-1 bg-orange-500/10 text-orange-400 text-sm font-bold rounded-lg border border-orange-500/20">
-                      ${maintenance.cost.toLocaleString()} CLP
+                      ${maintenance.cost.toLocaleString()}
                     </span>
                   )}
                   <button

@@ -219,7 +219,7 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
                 <option value="">Sin propietario asignado</option>
                 {owners.map((owner) => (
                   <option key={owner.id} value={owner.id}>
-                    {owner.name} - {owner.rut}
+                    {owner.name} - {owner.rut} - {owner.age} años - {owner.gender === 'male' ? 'M' : owner.gender === 'female' ? 'F' : 'Otro'}
                   </option>
                 ))}
               </select>
@@ -258,6 +258,19 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
                           <span className="text-zinc-200 ml-2">{selectedOwner.phone}</span>
                         </div>
                       </div>
+                        <div>
+                          <span className="text-zinc-500">Edad:</span>
+                          <span className="text-zinc-200 ml-2">{selectedOwner.age} años</span>
+                        </div>
+                        <div>
+                          <span className="text-zinc-500">Sexo:</span>
+                          <span className="text-zinc-200 ml-2">
+                            {selectedOwner.gender === 'male' ? 'Masculino' : 
+                             selectedOwner.gender === 'female' ? 'Femenino' : 
+                             selectedOwner.gender === 'other' ? 'Otro' : 'Prefiero no decir'}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   );
                 })()}
@@ -294,6 +307,20 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
               <option value="Gravel">Gravel</option>
               <option value="Ruta">Ruta</option>
             </select>
+          <div>
+            <label className="label">Estado</label>
+            <select
+              required
+              value={formData.status}
+              onChange={(e) => handleInputChange('status', e.target.value)}
+              className="input-field"
+            >
+              <option value="in_use">En Uso</option>
+              <option value="in_workshop">En Taller</option>
+              <option value="stolen">Robada</option>
+              <option value="sold">Vendida</option>
+            </select>
+          </div>
           </div>
           <div>
             <label className="label">Marca</label>
@@ -339,20 +366,7 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
               placeholder="Ej: Suntour XCM RL DS 120mm"
             />
           </div>
-          <div>
-            <label className="label">Estado</label>
-            <select
-              required
-              value={formData.status}
-              onChange={(e) => handleInputChange('status', e.target.value)}
-              className="input-field"
-            >
-              <option value="in_use">En Uso</option>
-              <option value="in_workshop">En Taller</option>
-              <option value="stolen">Robada</option>
-              <option value="sold">Vendida</option>
-            </select>
-          </div>
+
         </div>
       </div>
 

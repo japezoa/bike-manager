@@ -209,31 +209,68 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
               <h3 className="text-xl font-display font-bold text-cyan-400">RESUMEN</h3>
               
               <div className="space-y-3">
+                {/* INFORMACIÓN DE COMPRA - PRIMERO */}
+                <div className="flex items-center justify-between py-2 border-b border-zinc-800">
+                  <span className="text-zinc-400 text-sm">Fecha de compra</span>
+                  <span className="font-semibold">{formatShortDate(bike.purchaseDate)}</span>
+                </div>
+                
+                <div className="flex items-center justify-between py-2 border-b border-zinc-800">
+                  <span className="text-zinc-400 text-sm">Precio de compra</span>
+                  <span className="font-semibold text-green-400">${bike.purchasePrice.toLocaleString()}</span>
+                </div>
+
+                <div className="flex items-center justify-between py-2 border-b border-zinc-800">
+                  <span className="text-zinc-400 text-sm">Estado</span>
+                  <span className={`px-3 py-1 text-xs font-bold rounded-full border ${
+                    bike.status === 'in_use' 
+                      ? 'bg-green-500/10 text-green-400 border-green-500/20'
+                      : bike.status === 'in_workshop'
+                      ? 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+                      : bike.status === 'stolen'
+                      ? 'bg-red-500/10 text-red-400 border-red-500/20'
+                      : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                  }`}>
+                    {bike.status === 'in_use' ? 'En Uso' 
+                      : bike.status === 'in_workshop' ? 'En Taller'
+                      : bike.status === 'stolen' ? 'Robada'
+                      : 'Vendida'}
+                  </span>
+                </div>
+
+                {/* SEPARADOR */}
+                {maintenanceTotals.total > 0 && <div className="h-px bg-zinc-700 my-3" />}
+
+                {/* MANTENCIONES */}
                 {maintenanceTotals.total > 0 && (
                   <>
                     <div className="flex items-center justify-between py-2 border-b border-zinc-800">
                       <span className="text-zinc-400 text-sm">Mantención (Repuesto)</span>
                       <span className="font-semibold text-purple-400">
-                        ${maintenanceTotals.parts.toLocaleString()} CLP
+                        ${maintenanceTotals.parts.toLocaleString()}
                       </span>
                     </div>
                     
                     <div className="flex items-center justify-between py-2 border-b border-zinc-800">
                       <span className="text-zinc-400 text-sm">Mantención (Mano de obra)</span>
                       <span className="font-semibold text-cyan-400">
-                        ${maintenanceTotals.labor.toLocaleString()} CLP
+                        ${maintenanceTotals.labor.toLocaleString()}
                       </span>
                     </div>
                     
                     <div className="flex items-center justify-between py-3 bg-zinc-800/50 rounded-lg px-3">
                       <span className="text-zinc-300 font-semibold">Costo total mantenciones</span>
                       <span className="font-bold text-lg text-gradient">
-                        ${maintenanceTotals.total.toLocaleString()} CLP
+                        ${maintenanceTotals.total.toLocaleString()}
                       </span>
                     </div>
                   </>
                 )}
 
+                {/* SEPARADOR */}
+                {bike.totalKilometers && maintenanceTotals.total > 0 && <div className="h-px bg-zinc-700 my-3" />}
+
+                {/* KILÓMETROS */}
                 {bike.totalKilometers && (
                   <div className="flex items-center justify-between py-2">
                     <span className="text-zinc-400 text-sm">Kilómetros totales</span>
@@ -471,60 +508,5 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
               </div>
             )}
 
-            {/* Purchase Information - For all roles */}
-            <div className="card">
-              <div className="flex items-center gap-3 mb-6">
-                <DollarSign className="w-6 h-6 text-green-400" />
-                <h3 className="text-2xl font-display font-bold text-green-400">INFORMACIÓN DE COMPRA</h3>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-zinc-800/50 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Calendar className="w-4 h-4 text-green-400" />
-                    <span className="text-zinc-500 text-sm font-semibold">Fecha de Compra</span>
-                  </div>
-                  <p className="text-zinc-100 text-lg font-semibold">{formatShortDate(bike.purchaseDate)}</p>
-                </div>
-
-                <div className="bg-zinc-800/50 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <DollarSign className="w-4 h-4 text-green-400" />
-                    <span className="text-zinc-500 text-sm font-semibold">Precio de Compra</span>
-                  </div>
-                  <p className="text-zinc-100 text-lg font-semibold">${bike.purchasePrice.toLocaleString()} CLP</p>
-                </div>
-
-                <div className="bg-zinc-800/50 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Settings className="w-4 h-4 text-green-400" />
-                    <span className="text-zinc-500 text-sm font-semibold">Estado</span>
-                  </div>
-                  <span className={`inline-block px-3 py-1 text-sm font-bold rounded-full border ${
-                    bike.status === 'in_use' 
-                      ? 'bg-green-500/10 text-green-400 border-green-500/20'
-                      : bike.status === 'in_workshop'
-                      ? 'bg-orange-500/10 text-orange-400 border-orange-500/20'
-                      : bike.status === 'stolen'
-                      ? 'bg-red-500/10 text-red-400 border-red-500/20'
-                      : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
-                  }`}>
-                    {bike.status === 'in_use' ? 'En Uso' 
-                      : bike.status === 'in_workshop' ? 'En Taller'
-                      : bike.status === 'stolen' ? 'Robada'
-                      : 'Vendida'}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Audit Log - Admin Only */}
-            {role === 'admin' && bike.id && (
-              <AuditLogViewer entityType="bicycle" entityId={bike.id} />
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+            ;
 }

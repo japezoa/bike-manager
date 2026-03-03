@@ -168,7 +168,7 @@ export default function BikeList({ bicycles, onEdit, onDelete, onReorder }: Bike
                 <div className="flex items-center gap-2 text-sm text-zinc-400">
                   <DollarSign className="w-4 h-4 text-cyan-500" />
                   <div className="flex flex-col">
-                    <span>${bike.purchasePrice.toLocaleString()} CLP</span>
+                    <span>${bike.purchasePrice.toLocaleString()}</span>
                   </div>
                 </div>
               </div>
