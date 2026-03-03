@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Bicycle } from '@/types/bicycle';
 import { bicycleService } from '@/lib/bicycleService';
 import BikeList from '@/components/BikeList';
@@ -14,6 +15,7 @@ import { useAuth } from '@/components/AuthProvider';
 type View = 'list' | 'form';
 
 export default function Home() {
+  const router = useRouter();
   const { canCreateBikes, canViewAllOwners } = usePermissions();
   const { owner: currentUser, role } = useAuth();
   const [bicycles, setBicycles] = useState<Bicycle[]>([]);
