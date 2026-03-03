@@ -122,12 +122,80 @@ export const auditLogService = {
   formatChanges(changes: any): string {
     if (!changes) return '';
 
+    const fieldLabels: Record<string, string> = {
+      // Bicycle fields
+      name: 'Nombre',
+      brand: 'Marca',
+      model: 'Modelo',
+      bikeType: 'Tipo',
+      status: 'Estado',
+      frame: 'Cuadro',
+      fork: 'Horquilla',
+      purchaseDate: 'Fecha de compra',
+      purchasePrice: 'Precio de compra',
+      totalKilometers: 'Kilómetros totales',
+      owner_id: 'Propietario',
+      // Owner fields
+      rut: 'RUT',
+      age: 'Edad',
+      email: 'Email',
+      phone: 'Teléfono',
+      gender: 'Género',
+      role: 'Rol',
+      // Maintenance fields
+      date: 'Fecha',
+      maintenanceType: 'Tipo de mantención',
+      description: 'Descripción',
+      cost: 'Costo',
+      // Transmission
+      'transmission.speeds': 'Velocidades',
+      'transmission.shifter': 'Shifter',
+      'transmission.chain': 'Cadena',
+      'transmission.crankset': 'Bielas',
+      'transmission.cassette': 'Cassette',
+      // Brakes
+      'brakes.type': 'Tipo de frenos',
+      'brakes.model': 'Modelo de frenos',
+      // Wheels
+      'wheels.wheelSize': 'Tamaño de rueda',
+      'wheels.tires': 'Neumáticos',
+    };
+
+    const statusLabels: Record<string, string> = {
+      in_use: 'En Uso',
+      in_workshop: 'En Taller',
+      stolen: 'Robada',
+      sold: 'Vendida',
+    };
+
+    const typeLabels: Record<string, string> = {
+      MTB: 'MTB',
+      Gravel: 'Gravel',
+      Ruta: 'Ruta',
+    };
+
     const formatted: string[] = [];
 
     Object.keys(changes).forEach(key => {
       const change = changes[key];
       if (change.old !== undefined && change.new !== undefined) {
-        formatted.push(`${key}: "${change.old}" → "${change.new}"`);
+        const fieldName = fieldLabels[key] || key;
+        let oldValue = change.old;
+        let newValue = change.new;
+
+        // Translate status values
+        if (key === 'status') {
+          oldValue = statusLabels[oldValue] || oldValue;
+          newValue = statusLabels[newValue] || newValue;
+        }
+
+        // Translate bikeType values
+        if (key === 'bikeType') {
+          oldValue = typeLabels[oldValue] || oldValue;
+          newValue = typeLabels[newValue] || newValue;
+        }
+
+        formatted.push(`${fieldName}: "${oldValue}" → "${newValue}"`);
       }
     });
 

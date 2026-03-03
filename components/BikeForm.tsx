@@ -339,6 +339,20 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
               placeholder="Ej: Suntour XCM RL DS 120mm"
             />
           </div>
+          <div>
+            <label className="label">Estado</label>
+            <select
+              required
+              value={formData.status}
+              onChange={(e) => handleInputChange('status', e.target.value)}
+              className="input-field"
+            >
+              <option value="in_use">En Uso</option>
+              <option value="in_workshop">En Taller</option>
+              <option value="stolen">Robada</option>
+              <option value="sold">Vendida</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -376,16 +390,6 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
             />
           </div>
           <div>
-            <label className="label">Cadena</label>
-            <input
-              type="text"
-              value={formData.transmission.chain}
-              onChange={(e) => handleNestedChange('transmission', 'chain', e.target.value)}
-              className="input-field"
-              placeholder="Ej: Shimano CN-HG601"
-            />
-          </div>
-          <div>
             <label className="label">Bielas / Plato</label>
             <input
               type="text"
@@ -396,13 +400,23 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
             />
           </div>
           <div>
-            <label className="label">Eje</label>
+            <label className="label">Eje Motor</label>
             <input
               type="text"
               value={formData.transmission.bottomBracket}
               onChange={(e) => handleNestedChange('transmission', 'bottomBracket', e.target.value)}
               className="input-field"
               placeholder="Ej: Shimano BB-MT501"
+            />
+          </div>
+          <div>
+            <label className="label">Cambio Delantero (Opcional)</label>
+            <input
+              type="text"
+              value={formData.transmission.frontDerailleur || ''}
+              onChange={(e) => handleNestedChange('transmission', 'frontDerailleur', e.target.value)}
+              className="input-field"
+              placeholder="Ej: Shimano FD-TY700"
             />
           </div>
           <div>
@@ -416,13 +430,13 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
             />
           </div>
           <div>
-            <label className="label">Cambio Delantero (Opcional)</label>
+            <label className="label">Cadena</label>
             <input
               type="text"
-              value={formData.transmission.frontDerailleur || ''}
-              onChange={(e) => handleNestedChange('transmission', 'frontDerailleur', e.target.value)}
+              value={formData.transmission.chain}
+              onChange={(e) => handleNestedChange('transmission', 'chain', e.target.value)}
               className="input-field"
-              placeholder="Ej: Shimano FD-TY700"
+              placeholder="Ej: Shimano CN-HG601"
             />
           </div>
           <div>

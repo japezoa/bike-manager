@@ -209,40 +209,26 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
               <h3 className="text-xl font-display font-bold text-cyan-400">RESUMEN</h3>
               
               <div className="space-y-3">
-                <div className="flex items-center justify-between py-2 border-b border-zinc-800">
-                  <span className="text-zinc-400 text-sm">Fecha de compra</span>
-                  <span className="font-semibold">
-                    {formatShortDate(bike.purchaseDate)}
-                  </span>
-                </div>
-                
-                <div className="flex items-center justify-between py-2 border-b border-zinc-800">
-                  <span className="text-zinc-400 text-sm">Precio de compra</span>
-                  <span className="font-semibold text-cyan-400">
-                    ${bike.purchasePrice.toLocaleString()} CLP
-                  </span>
-                </div>
-
                 {maintenanceTotals.total > 0 && (
                   <>
                     <div className="flex items-center justify-between py-2 border-b border-zinc-800">
-                      <span className="text-zinc-400 text-sm">Mantenciones (Repuestos)</span>
+                      <span className="text-zinc-400 text-sm">Mantención (Repuesto)</span>
                       <span className="font-semibold text-purple-400">
                         ${maintenanceTotals.parts.toLocaleString()} CLP
                       </span>
                     </div>
                     
                     <div className="flex items-center justify-between py-2 border-b border-zinc-800">
-                      <span className="text-zinc-400 text-sm">Mantenciones (Mano de obra)</span>
+                      <span className="text-zinc-400 text-sm">Mantención (Mano de obra)</span>
                       <span className="font-semibold text-cyan-400">
                         ${maintenanceTotals.labor.toLocaleString()} CLP
                       </span>
                     </div>
                     
                     <div className="flex items-center justify-between py-3 bg-zinc-800/50 rounded-lg px-3">
-                      <span className="text-zinc-300 font-semibold">Costo total</span>
+                      <span className="text-zinc-300 font-semibold">Costo total mantenciones</span>
                       <span className="font-bold text-lg text-gradient">
-                        ${(bike.purchasePrice + maintenanceTotals.total).toLocaleString()} CLP
+                        ${maintenanceTotals.total.toLocaleString()} CLP
                       </span>
                     </div>
                   </>
@@ -262,20 +248,20 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
 
           {/* Right Column - Detailed Info */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Frame & Geometry */}
+            {/* Frame & Components */}
             <div className="card">
               <div className="flex items-center gap-3 mb-4">
                 <Box className="w-6 h-6 text-cyan-400" />
-                <h3 className="text-xl font-display font-bold text-cyan-400">CUADRO Y GEOMETRÍA</h3>
+                <h3 className="text-xl font-display font-bold text-cyan-400">CUADRO Y COMPONENTES</h3>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <span className="text-zinc-500 text-sm font-semibold">Cuadro</span>
-                  <p className="text-zinc-200">{bike.frame}</p>
-                </div>
-                <div>
                   <span className="text-zinc-500 text-sm font-semibold">Tipo</span>
                   <p className="text-zinc-200">{bike.bikeType}</p>
+                </div>
+                <div>
+                  <span className="text-zinc-500 text-sm font-semibold">Cuadro</span>
+                  <p className="text-zinc-200">{bike.frame}</p>
                 </div>
                 <div>
                   <span className="text-zinc-500 text-sm font-semibold">Horquilla</span>
@@ -322,20 +308,12 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
                   <p className="text-zinc-200">{bike.transmission.shifter}</p>
                 </div>
                 <div>
-                  <span className="text-zinc-500 text-sm font-semibold">Cadena</span>
-                  <p className="text-zinc-200">{bike.transmission.chain}</p>
-                </div>
-                <div>
                   <span className="text-zinc-500 text-sm font-semibold">Bielas / Plato</span>
                   <p className="text-zinc-200">{bike.transmission.crankset}</p>
                 </div>
                 <div>
-                  <span className="text-zinc-500 text-sm font-semibold">Eje</span>
+                  <span className="text-zinc-500 text-sm font-semibold">Eje Motor</span>
                   <p className="text-zinc-200">{bike.transmission.bottomBracket}</p>
-                </div>
-                <div>
-                  <span className="text-zinc-500 text-sm font-semibold">Cambio Trasero</span>
-                  <p className="text-zinc-200">{bike.transmission.rearDerailleur}</p>
                 </div>
                 {bike.transmission.frontDerailleur && (
                   <div>
@@ -343,6 +321,14 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
                     <p className="text-zinc-200">{bike.transmission.frontDerailleur}</p>
                   </div>
                 )}
+                <div>
+                  <span className="text-zinc-500 text-sm font-semibold">Cambio Trasero</span>
+                  <p className="text-zinc-200">{bike.transmission.rearDerailleur}</p>
+                </div>
+                <div>
+                  <span className="text-zinc-500 text-sm font-semibold">Cadena</span>
+                  <p className="text-zinc-200">{bike.transmission.chain}</p>
+                </div>
                 <div>
                   <span className="text-zinc-500 text-sm font-semibold">Piñón / Cassette</span>
                   <p className="text-zinc-200">{bike.transmission.cassette}</p>
@@ -482,17 +468,6 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
                     </p>
                   </div>
                 </div>
-
-                {role === 'admin' && (
-                  <div className="mt-6 pt-6 border-t border-zinc-700">
-                    <Link href="/owners">
-                      <button className="bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 font-semibold py-3 px-6 rounded-lg transition-all duration-200 border border-orange-500/20 flex items-center gap-2">
-                        <Users className="w-5 h-5" />
-                        Ver todos los propietarios
-                      </button>
-                    </Link>
-                  </div>
-                )}
               </div>
             )}
 
