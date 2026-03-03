@@ -283,6 +283,19 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
             />
           </div>
           <div>
+            <label className="label">Tipo</label>
+            <select
+              required
+              value={formData.bikeType}
+              onChange={(e) => handleInputChange('bikeType', e.target.value)}
+              className="input-field"
+            >
+              <option value="MTB">MTB</option>
+              <option value="Gravel">Gravel</option>
+              <option value="Ruta">Ruta</option>
+            </select>
+          </div>
+          <div>
             <label className="label">Marca</label>
             <input
               type="text"
@@ -305,32 +318,6 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
             />
           </div>
           <div>
-            <label className="label">Tipo</label>
-            <select
-              required
-              value={formData.bikeType}
-              onChange={(e) => handleInputChange('bikeType', e.target.value)}
-              className="input-field"
-            >
-              <option value="MTB">MTB</option>
-              <option value="Gravel">Gravel</option>
-              <option value="Ruta">Ruta</option>
-            </select>
-          </div>
-          <div>
-            <label className="label">Estado</label>
-            <select
-              required
-              value={formData.status}
-              onChange={(e) => handleInputChange('status', e.target.value)}
-              className="input-field"
-            >
-              <option value="in_use">En Uso</option>
-              <option value="sold">Vendida</option>
-              <option value="stolen">Robada</option>
-            </select>
-          </div>
-          <div>
             <label className="label">Cuadro</label>
             <input
               type="text"
@@ -341,7 +328,7 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
               placeholder="Ej: SmartForm C3 Alloy"
             />
           </div>
-          <div className="md:col-span-2">
+          <div>
             <label className="label">Horquilla</label>
             <input
               type="text"
@@ -457,14 +444,17 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="label">Tipo</label>
-            <input
-              type="text"
+            <select
               required
               value={formData.brakes.type}
               onChange={(e) => handleNestedChange('brakes', 'type', e.target.value)}
               className="input-field"
-              placeholder="Ej: Disco hidráulico"
-            />
+            >
+              <option value="">Seleccionar tipo</option>
+              <option value="V-Brake">V-Brake</option>
+              <option value="Disco Mecánico">Disco Mecánico</option>
+              <option value="Disco Hidráulico">Disco Hidráulico</option>
+            </select>
           </div>
           <div>
             <label className="label">Modelo</label>
@@ -495,14 +485,17 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="label">Tamaño de rueda</label>
-            <input
-              type="text"
+            <select
               required
               value={formData.wheels.wheelSize}
               onChange={(e) => handleNestedChange('wheels', 'wheelSize', e.target.value)}
               className="input-field"
-              placeholder="Ej: 27.5'' o 29''"
-            />
+            >
+              <option value="">Seleccionar tamaño</option>
+              <option value="26">26"</option>
+              <option value="27.5">27.5"</option>
+              <option value="29">29"</option>
+            </select>
           </div>
           <div>
             <label className="label">Neumáticos</label>

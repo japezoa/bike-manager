@@ -57,6 +57,12 @@ export default function Home() {
     // If customer, only show their bikes
     if (role === 'customer' && currentUser) {
       filtered = bicycles.filter(b => b.ownerId === currentUser.id);
+      
+      // If customer has only 1 bike, redirect to detail page
+      if (filtered.length === 1 && filtered[0].id) {
+        router.push(`/bike/${filtered[0].id}`);
+        return;
+      }
     }
     
     // Apply manual owner filter (for admin/mechanic)
@@ -70,7 +76,7 @@ export default function Home() {
     }
     
     setFilteredBicycles(filtered);
-  }, [bicycles, ownerFilter, statusFilter, role, currentUser]);
+  }, [bicycles, ownerFilter, statusFilter, role, currentUser, router]);
 
   const loadBicycles = async () => {
     try {

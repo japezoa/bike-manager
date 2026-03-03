@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Bicycle, Owner } from '@/types/bicycle';
 import { bicycleService } from '@/lib/bicycleService';
 import { ownerService } from '@/lib/ownerService';
+import { maintenanceService } from '@/lib/maintenanceService';
 import { 
   ArrowLeft, 
   Edit, 
@@ -39,10 +40,45 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
   const [bike, setBike] = useState<Bicycle | null>(null);
   const [owner, setOwner] = useState<Owner | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showBackButton, setShowBackButton] = useState(true);
+  const [maintenanceTotals, setMaintenanceTotals] = useState({ parts: 0, labor: 0, total: 0 });
 
   useEffect(() => {
     loadBike();
+    checkBackButtonVisibility();
+    loadMaintenanceTotals();
   }, [params.id]);
+
+  const loadMaintenanceTotals = async () => {
+    try {
+      const maintenances = await maintenanceService.getByBicycleId(params.id);
+      
+      const parts = maintenances
+        .filter(m => m.maintenanceType === 'repuesto')
+        .reduce((sum, m) => sum + (m.cost || 0), 0);
+      
+      const labor = maintenances
+        .filter(m => m.maintenanceType === 'mano_de_obra')
+        .reduce((sum, m) => sum + (m.cost || 0), 0);
+      
+      setMaintenanceTotals({
+        parts,
+        labor,
+        total: parts + labor
+      });
+    } catch (error) {
+      console.error('Error loading maintenance totals:', error);
+    }
+  };
+
+  const checkBackButtonVisibility = async () => {
+    // Hide back button for customers with only 1 bike
+    if (role === 'customer' && currentUser) {
+      const allBikes = await bicycleService.getAll();
+      const customerBikes = allBikes.filter(b => b.ownerId === currentUser.id);
+      setShowBackButton(customerBikes.length > 1);
+    }
+  };
 
   const loadBike = async () => {
     try {
@@ -123,12 +159,14 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
               </div>
             </div>
             <div className="flex gap-3">
-              <Link href="/">
-                <button className="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 font-semibold py-2 px-4 rounded-lg transition-all duration-200">
-                  <ArrowLeft className="w-4 h-4" />
-                  <span className="hidden sm:inline text-sm">Volver</span>
-                </button>
-              </Link>
+              {showBackButton && (
+                <Link href="/">
+                  <button className="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-100 font-semibold py-2 px-4 rounded-lg transition-all duration-200">
+                    <ArrowLeft className="w-4 h-4" />
+                    <span className="hidden sm:inline text-sm">Volver</span>
+                  </button>
+                </Link>
+              )}
               {canEditBikes && (
                 <button 
                   onClick={() => router.push(`/?edit=${bike.id}`)}
@@ -184,6 +222,31 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
                     ${bike.purchasePrice.toLocaleString()} CLP
                   </span>
                 </div>
+
+                {maintenanceTotals.total > 0 && (
+                  <>
+                    <div className="flex items-center justify-between py-2 border-b border-zinc-800">
+                      <span className="text-zinc-400 text-sm">Mantenciones (Repuestos)</span>
+                      <span className="font-semibold text-purple-400">
+                        ${maintenanceTotals.parts.toLocaleString()} CLP
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between py-2 border-b border-zinc-800">
+                      <span className="text-zinc-400 text-sm">Mantenciones (Mano de obra)</span>
+                      <span className="font-semibold text-cyan-400">
+                        ${maintenanceTotals.labor.toLocaleString()} CLP
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between py-3 bg-zinc-800/50 rounded-lg px-3">
+                      <span className="text-zinc-300 font-semibold">Costo total</span>
+                      <span className="font-bold text-lg text-gradient">
+                        ${(bike.purchasePrice + maintenanceTotals.total).toLocaleString()} CLP
+                      </span>
+                    </div>
+                  </>
+                )}
 
                 {bike.totalKilometers && (
                   <div className="flex items-center justify-between py-2">
@@ -432,6 +495,53 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
                 )}
               </div>
             )}
+
+            {/* Purchase Information - For all roles */}
+            <div className="card">
+              <div className="flex items-center gap-3 mb-6">
+                <DollarSign className="w-6 h-6 text-green-400" />
+                <h3 className="text-2xl font-display font-bold text-green-400">INFORMACIÓN DE COMPRA</h3>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-zinc-800/50 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Calendar className="w-4 h-4 text-green-400" />
+                    <span className="text-zinc-500 text-sm font-semibold">Fecha de Compra</span>
+                  </div>
+                  <p className="text-zinc-100 text-lg font-semibold">{formatShortDate(bike.purchaseDate)}</p>
+                </div>
+
+                <div className="bg-zinc-800/50 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <DollarSign className="w-4 h-4 text-green-400" />
+                    <span className="text-zinc-500 text-sm font-semibold">Precio de Compra</span>
+                  </div>
+                  <p className="text-zinc-100 text-lg font-semibold">${bike.purchasePrice.toLocaleString()} CLP</p>
+                </div>
+
+                <div className="bg-zinc-800/50 rounded-lg p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Settings className="w-4 h-4 text-green-400" />
+                    <span className="text-zinc-500 text-sm font-semibold">Estado</span>
+                  </div>
+                  <span className={`inline-block px-3 py-1 text-sm font-bold rounded-full border ${
+                    bike.status === 'in_use' 
+                      ? 'bg-green-500/10 text-green-400 border-green-500/20'
+                      : bike.status === 'in_workshop'
+                      ? 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+                      : bike.status === 'stolen'
+                      ? 'bg-red-500/10 text-red-400 border-red-500/20'
+                      : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                  }`}>
+                    {bike.status === 'in_use' ? 'En Uso' 
+                      : bike.status === 'in_workshop' ? 'En Taller'
+                      : bike.status === 'stolen' ? 'Robada'
+                      : 'Vendida'}
+                  </span>
+                </div>
+              </div>
+            </div>
 
             {/* Audit Log - Admin Only */}
             {role === 'admin' && bike.id && (
