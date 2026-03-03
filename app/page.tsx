@@ -24,7 +24,7 @@ export default function Home() {
   const [selectedBike, setSelectedBike] = useState<Bicycle | null>(null);
   const [loading, setLoading] = useState(true);
   const [ownerFilter, setOwnerFilter] = useState<string | null>(null);
-  const [statusFilter, setStatusFilter] = useState<string[]>(['in_use', 'in_workshop']); // Default: show active bikes
+  const [statusFilter, setStatusFilter] = useState<string[]>(['in_use', 'in_workshop', 'stolen', 'sold']); // Default: show all
 
   useEffect(() => {
     loadBicycles();
