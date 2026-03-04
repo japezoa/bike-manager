@@ -257,7 +257,6 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
                           <span className="text-zinc-500">Teléfono:</span>
                           <span className="text-zinc-200 ml-2">{selectedOwner.phone}</span>
                         </div>
-                      </div>
                         <div>
                           <span className="text-zinc-500">Edad:</span>
                           <span className="text-zinc-200 ml-2">{selectedOwner.age} años</span>
@@ -307,6 +306,7 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
               <option value="Gravel">Gravel</option>
               <option value="Ruta">Ruta</option>
             </select>
+          </div>
           <div>
             <label className="label">Estado</label>
             <select
@@ -320,7 +320,6 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
               <option value="stolen">Robada</option>
               <option value="sold">Vendida</option>
             </select>
-          </div>
           </div>
           <div>
             <label className="label">Marca</label>
@@ -366,7 +365,6 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
               placeholder="Ej: Suntour XCM RL DS 120mm"
             />
           </div>
-
         </div>
       </div>
 

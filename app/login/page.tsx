@@ -134,7 +134,7 @@ function LoginContent() {
         <div className="text-center mt-8">
           <p className="text-zinc-600 text-sm">
             ¿No tienes acceso?{' '}
-            <a href="mailto:admin@bikemanager.com" className="text-cyan-400 hover:text-cyan-300">
+            <a href="mailto:japezoa@gmail.com" className="text-cyan-400 hover:text-cyan-300">
               Contactar administrador
             </a>
           </p>

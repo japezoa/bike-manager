@@ -508,5 +508,14 @@ export default function BikeDetailPage({ params }: { params: { id: string } }) {
               </div>
             )}
 
-            ;
+
+            {/* Audit Log - Admin Only */}
+            {role === 'admin' && bike.id && (
+              <AuditLogViewer entityType="bicycle" entityId={bike.id} />
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
