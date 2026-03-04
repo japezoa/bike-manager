@@ -13,7 +13,7 @@ import { usePermissions } from '@/components/RoleGuard';
 type View = 'list' | 'form';
 
 export default function OwnersPage() {
-  const { canEditOwners, canViewAllOwners } = usePermissions();
+  const { canEditOwners } = usePermissions();
   const [owners, setOwners] = useState<Owner[]>([]);
   const [bicycleCounts, setBicycleCounts] = useState<Map<string, number>>(new Map());
   const [currentView, setCurrentView] = useState<View>('list');
@@ -22,14 +22,8 @@ export default function OwnersPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Only load owners if user has permission
-    if (canViewAllOwners) {
-      loadOwners();
-    } else {
-      setLoading(false);
-      setError('No tienes permisos para ver esta página');
-    }
-  }, [canViewAllOwners]);
+    loadOwners();
+  }, []);
 
   const loadOwners = async () => {
     try {
@@ -183,53 +177,31 @@ export default function OwnersPage() {
             </div>
           ) : error ? (
             <div className="card text-center py-16">
-              {error.includes('permisos') ? (
-                // Access Denied Message
-                <>
-                  <div className="mb-6">
-                    <div className="inline-block p-4 bg-red-500/10 rounded-full mb-4">
-                      <User className="w-12 h-12 text-red-400" />
-                    </div>
-                    <h3 className="text-2xl font-display font-bold text-red-400 mb-2">Acceso Denegado</h3>
-                    <p className="text-zinc-400 mb-6">
-                      No tienes permisos para ver esta página. Solo administradores y mecánicos pueden acceder a la gestión de propietarios.
-                    </p>
-                    <Link href="/">
-                      <button className="btn-primary">
-                        <ArrowLeft className="w-4 h-4" />
-                        Volver al Inicio
-                      </button>
-                    </Link>
-                  </div>
-                </>
-              ) : (
-                // Other Errors
-                <>
-                  <div className="mb-6">
-                    <div className="inline-block p-4 bg-red-500/10 rounded-full mb-4">
-                      <svg className="w-12 h-12 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                      </svg>
-                    </div>
-                    <h3 className="text-2xl font-display font-bold text-red-400 mb-2">Error al Cargar Propietarios</h3>
-                    <p className="text-zinc-400 mb-6">{error}</p>
-                    <div className="bg-zinc-800/50 rounded-lg p-6 text-left max-w-2xl mx-auto">
-                      <h4 className="text-lg font-bold text-orange-400 mb-3">¿Qué hacer?</h4>
-                      <ol className="space-y-2 text-zinc-300">
-                        <li className="flex items-start gap-2">
-                          <span className="text-orange-400 font-bold">1.</span>
-                          <span>Asegúrate de haber ejecutado la migración SQL en Supabase</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-orange-400 font-bold">2.</span>
-                          <span>Ve a Supabase → SQL Editor</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-orange-400 font-bold">3.</span>
-                          <span>Ejecuta el archivo <code className="bg-zinc-900 px-2 py-1 rounded text-cyan-400">supabase/migration-v2.sql</code></span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-orange-400 font-bold">4.</span>
+              <div className="mb-6">
+                <div className="inline-block p-4 bg-red-500/10 rounded-full mb-4">
+                  <svg className="w-12 h-12 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-display font-bold text-red-400 mb-2">Error al Cargar Propietarios</h3>
+                <p className="text-zinc-400 mb-6">{error}</p>
+                <div className="bg-zinc-800/50 rounded-lg p-6 text-left max-w-2xl mx-auto">
+                  <h4 className="text-lg font-bold text-orange-400 mb-3">¿Qué hacer?</h4>
+                  <ol className="space-y-2 text-zinc-300">
+                    <li className="flex items-start gap-2">
+                      <span className="text-orange-400 font-bold">1.</span>
+                      <span>Asegúrate de haber ejecutado la migración SQL en Supabase</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-orange-400 font-bold">2.</span>
+                      <span>Ve a Supabase → SQL Editor</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-orange-400 font-bold">3.</span>
+                      <span>Ejecuta el archivo <code className="bg-zinc-900 px-2 py-1 rounded text-cyan-400">supabase/migration-v2.sql</code></span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-orange-400 font-bold">4.</span>
                       <span>Recarga esta página</span>
                     </li>
                   </ol>
@@ -241,8 +213,6 @@ export default function OwnersPage() {
                   Reintentar
                 </button>
               </div>
-                </>
-              )}
             </div>
           ) : currentView === 'list' ? (
             <OwnerList
