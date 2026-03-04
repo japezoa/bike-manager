@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Owner } from '@/types/bicycle';
 import { ownerService } from '@/lib/ownerService';
@@ -9,11 +10,14 @@ import OwnerForm from '@/components/OwnerForm';
 import UserMenu from '@/components/UserMenu';
 import { User, Plus, ArrowLeft, List } from 'lucide-react';
 import { usePermissions } from '@/components/RoleGuard';
+import { useAuth } from '@/components/AuthProvider';
 
 type View = 'list' | 'form';
 
 export default function OwnersPage() {
-  const { canEditOwners } = usePermissions();
+  const router = useRouter();
+  const { canEditOwners, canViewAllOwners } = usePermissions();
+  const { role } = useAuth();
   const [owners, setOwners] = useState<Owner[]>([]);
   const [bicycleCounts, setBicycleCounts] = useState<Map<string, number>>(new Map());
   const [currentView, setCurrentView] = useState<View>('list');
@@ -21,9 +25,19 @@ export default function OwnersPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Security: Redirect customers away from this page
   useEffect(() => {
-    loadOwners();
-  }, []);
+    if (role === 'customer') {
+      router.push('/');
+    }
+  }, [role, router]);
+
+  useEffect(() => {
+    // Only load if user has permission
+    if (canViewAllOwners) {
+      loadOwners();
+    }
+  }, [canViewAllOwners]);
 
   const loadOwners = async () => {
     try {
@@ -101,6 +115,30 @@ export default function OwnersPage() {
     // This will navigate to main page and filter by owner
     window.location.href = `/?owner=${ownerId}`;
   };
+
+  // Access denied for customers
+  if (role === 'customer') {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+        <div className="card max-w-md p-8 text-center">
+          <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <User className="w-8 h-8 text-red-400" />
+          </div>
+          <h2 className="text-2xl font-display font-bold text-red-400 mb-2">
+            Acceso Denegado
+          </h2>
+          <p className="text-zinc-400 mb-6">
+            No tienes permisos para ver esta página. Solo administradores y mecánicos pueden acceder a la gestión de propietarios.
+          </p>
+          <Link href="/">
+            <button className="btn-primary">
+              Volver al Inicio
+            </button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen relative overflow-hidden">
