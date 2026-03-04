@@ -279,21 +279,31 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
         </div>
       )}
 
+      {/* Estado - Campo separado arriba */}
+      <div className="card">
+        <h3 className="text-xl font-display font-bold text-orange-400 mb-4">ESTADO</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="label">Estado de la bicicleta</label>
+            <select
+              required
+              value={formData.status}
+              onChange={(e) => handleInputChange('status', e.target.value)}
+              className="input-field"
+            >
+              <option value="in_use">En Uso</option>
+              <option value="in_workshop">En Taller</option>
+              <option value="stolen">Robada</option>
+              <option value="sold">Vendida</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
       {/* Basic Information */}
       <div className="card">
         <h3 className="text-xl font-display font-bold text-cyan-400 mb-4">INFORMACIÓN BÁSICA</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="label">Nombre</label>
-            <input
-              type="text"
-              required
-              value={formData.name}
-              onChange={(e) => handleInputChange('name', e.target.value)}
-              className="input-field"
-              placeholder="Ej: Amante 2"
-            />
-          </div>
           <div>
             <label className="label">Tipo</label>
             <select
@@ -308,18 +318,15 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
             </select>
           </div>
           <div>
-            <label className="label">Estado</label>
-            <select
+            <label className="label">Nombre</label>
+            <input
+              type="text"
               required
-              value={formData.status}
-              onChange={(e) => handleInputChange('status', e.target.value)}
+              value={formData.name}
+              onChange={(e) => handleInputChange('name', e.target.value)}
               className="input-field"
-            >
-              <option value="in_use">En Uso</option>
-              <option value="in_workshop">En Taller</option>
-              <option value="stolen">Robada</option>
-              <option value="sold">Vendida</option>
-            </select>
+              placeholder="Ej: Amante 2"
+            />
           </div>
           <div>
             <label className="label">Marca</label>
@@ -422,7 +429,7 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
             />
           </div>
           <div>
-            <label className="label">Cambio Delantero (Opcional)</label>
+            <label className="label">Cambio Delantero</label>
             <input
               type="text"
               value={formData.transmission.frontDerailleur || ''}
@@ -578,7 +585,7 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
 
       {/* Components */}
       <div className="card">
-        <h3 className="text-xl font-display font-bold text-cyan-400 mb-4">COMPONENTES</h3>
+        <h3 className="text-xl font-display font-bold text-cyan-400 mb-4">OTROS COMPONENTES</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="label">Manubrio</label>
@@ -621,7 +628,7 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
             />
           </div>
           <div className="md:col-span-2">
-            <label className="label">Pedales (Opcional)</label>
+            <label className="label">Pedales</label>
             <input
               type="text"
               value={formData.components.pedals || ''}
@@ -648,7 +655,7 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
             />
           </div>
           <div>
-            <label className="label">Precio (CLP)</label>
+            <label className="label">Precio</label>
             <input
               type="number"
               required
@@ -659,7 +666,7 @@ export default function BikeForm({ bicycle, onSave, onCancel }: BikeFormProps) {
             />
           </div>
           <div>
-            <label className="label">Kilómetros totales (Opcional)</label>
+            <label className="label">Kilómetros totales</label>
             <input
               type="number"
               value={formData.totalKilometers || 0}

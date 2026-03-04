@@ -239,7 +239,7 @@ export default function MaintenanceManager({ bicycleId }: MaintenanceManagerProp
             </div>
 
             <div>
-              <label className="label">Costo (CLP)</label>
+              <label className="label">Costo</label>
               <input
                 type="number"
                 value={formData.cost || ''}
