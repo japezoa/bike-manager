@@ -17,7 +17,7 @@ type View = 'list' | 'form';
 export default function OwnersPage() {
   const router = useRouter();
   const { canEditOwners, canViewAllOwners } = usePermissions();
-  const { role } = useAuth();
+  const { role, loading: authLoading } = useAuth();
   const [owners, setOwners] = useState<Owner[]>([]);
   const [bicycleCounts, setBicycleCounts] = useState<Map<string, number>>(new Map());
   const [currentView, setCurrentView] = useState<View>('list');
@@ -27,17 +27,17 @@ export default function OwnersPage() {
 
   // Security: Redirect customers away from this page
   useEffect(() => {
-    if (role === 'customer') {
+    if (!authLoading && role === 'customer') {
       router.push('/');
     }
-  }, [role, router]);
+  }, [role, authLoading, router]);
 
   useEffect(() => {
-    // Only load if user has permission
-    if (canViewAllOwners) {
+    // Only load if user has permission and auth is loaded
+    if (!authLoading && canViewAllOwners) {
       loadOwners();
     }
-  }, [canViewAllOwners]);
+  }, [canViewAllOwners, authLoading]);
 
   const loadOwners = async () => {
     try {
@@ -115,6 +115,18 @@ export default function OwnersPage() {
     // This will navigate to main page and filter by owner
     window.location.href = `/?owner=${ownerId}`;
   };
+
+  // Show loading while checking auth
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
+          <span className="text-zinc-400 font-semibold">Verificando permisos...</span>
+        </div>
+      </div>
+    );
+  }
 
   // Access denied for customers
   if (role === 'customer') {
