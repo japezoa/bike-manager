@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Owner } from '@/types/bicycle';
 import { ownerService } from '@/lib/ownerService';
@@ -10,14 +9,11 @@ import OwnerForm from '@/components/OwnerForm';
 import UserMenu from '@/components/UserMenu';
 import { User, Plus, ArrowLeft, List } from 'lucide-react';
 import { usePermissions } from '@/components/RoleGuard';
-import { useAuth } from '@/components/AuthProvider';
 
 type View = 'list' | 'form';
 
 export default function OwnersPage() {
-  const router = useRouter();
   const { canEditOwners, canViewAllOwners } = usePermissions();
-  const { role, loading: authLoading } = useAuth();
   const [owners, setOwners] = useState<Owner[]>([]);
   const [bicycleCounts, setBicycleCounts] = useState<Map<string, number>>(new Map());
   const [currentView, setCurrentView] = useState<View>('list');
@@ -25,19 +21,15 @@ export default function OwnersPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Security: Redirect customers away from this page
   useEffect(() => {
-    if (!authLoading && role === 'customer') {
-      router.push('/');
-    }
-  }, [role, authLoading, router]);
-
-  useEffect(() => {
-    // Only load if user has permission and auth is loaded
-    if (!authLoading && canViewAllOwners) {
+    // Only load owners if user has permission
+    if (canViewAllOwners) {
       loadOwners();
+    } else {
+      setLoading(false);
+      setError('No tienes permisos para ver esta página');
     }
-  }, [canViewAllOwners, authLoading]);
+  }, [canViewAllOwners]);
 
   const loadOwners = async () => {
     try {
@@ -116,42 +108,6 @@ export default function OwnersPage() {
     window.location.href = `/?owner=${ownerId}`;
   };
 
-  // Show loading while checking auth
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-zinc-400 font-semibold">Verificando permisos...</span>
-        </div>
-      </div>
-    );
-  }
-
-  // Access denied for customers
-  if (role === 'customer') {
-    return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="card max-w-md p-8 text-center">
-          <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <User className="w-8 h-8 text-red-400" />
-          </div>
-          <h2 className="text-2xl font-display font-bold text-red-400 mb-2">
-            Acceso Denegado
-          </h2>
-          <p className="text-zinc-400 mb-6">
-            No tienes permisos para ver esta página. Solo administradores y mecánicos pueden acceder a la gestión de propietarios.
-          </p>
-          <Link href="/">
-            <button className="btn-primary">
-              Volver al Inicio
-            </button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Animated background elements */}
@@ -227,31 +183,53 @@ export default function OwnersPage() {
             </div>
           ) : error ? (
             <div className="card text-center py-16">
-              <div className="mb-6">
-                <div className="inline-block p-4 bg-red-500/10 rounded-full mb-4">
-                  <svg className="w-12 h-12 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-display font-bold text-red-400 mb-2">Error al Cargar Propietarios</h3>
-                <p className="text-zinc-400 mb-6">{error}</p>
-                <div className="bg-zinc-800/50 rounded-lg p-6 text-left max-w-2xl mx-auto">
-                  <h4 className="text-lg font-bold text-orange-400 mb-3">¿Qué hacer?</h4>
-                  <ol className="space-y-2 text-zinc-300">
-                    <li className="flex items-start gap-2">
-                      <span className="text-orange-400 font-bold">1.</span>
-                      <span>Asegúrate de haber ejecutado la migración SQL en Supabase</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-orange-400 font-bold">2.</span>
-                      <span>Ve a Supabase → SQL Editor</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-orange-400 font-bold">3.</span>
-                      <span>Ejecuta el archivo <code className="bg-zinc-900 px-2 py-1 rounded text-cyan-400">supabase/migration-v2.sql</code></span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-orange-400 font-bold">4.</span>
+              {error.includes('permisos') ? (
+                // Access Denied Message
+                <>
+                  <div className="mb-6">
+                    <div className="inline-block p-4 bg-red-500/10 rounded-full mb-4">
+                      <User className="w-12 h-12 text-red-400" />
+                    </div>
+                    <h3 className="text-2xl font-display font-bold text-red-400 mb-2">Acceso Denegado</h3>
+                    <p className="text-zinc-400 mb-6">
+                      No tienes permisos para ver esta página. Solo administradores y mecánicos pueden acceder a la gestión de propietarios.
+                    </p>
+                    <Link href="/">
+                      <button className="btn-primary">
+                        <ArrowLeft className="w-4 h-4" />
+                        Volver al Inicio
+                      </button>
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                // Other Errors
+                <>
+                  <div className="mb-6">
+                    <div className="inline-block p-4 bg-red-500/10 rounded-full mb-4">
+                      <svg className="w-12 h-12 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-2xl font-display font-bold text-red-400 mb-2">Error al Cargar Propietarios</h3>
+                    <p className="text-zinc-400 mb-6">{error}</p>
+                    <div className="bg-zinc-800/50 rounded-lg p-6 text-left max-w-2xl mx-auto">
+                      <h4 className="text-lg font-bold text-orange-400 mb-3">¿Qué hacer?</h4>
+                      <ol className="space-y-2 text-zinc-300">
+                        <li className="flex items-start gap-2">
+                          <span className="text-orange-400 font-bold">1.</span>
+                          <span>Asegúrate de haber ejecutado la migración SQL en Supabase</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-orange-400 font-bold">2.</span>
+                          <span>Ve a Supabase → SQL Editor</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-orange-400 font-bold">3.</span>
+                          <span>Ejecuta el archivo <code className="bg-zinc-900 px-2 py-1 rounded text-cyan-400">supabase/migration-v2.sql</code></span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-orange-400 font-bold">4.</span>
                       <span>Recarga esta página</span>
                     </li>
                   </ol>
@@ -263,6 +241,8 @@ export default function OwnersPage() {
                   Reintentar
                 </button>
               </div>
+                </>
+              )}
             </div>
           ) : currentView === 'list' ? (
             <OwnerList
